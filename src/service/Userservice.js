@@ -9,7 +9,8 @@ export const loginUser = async (data) => {
 };
 
 export const signUpUser = async (data) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}user/sign-up`, data);
+    console.log(data);
+    const res = await axios.post(`http://localhost:2000/user/sign-up`, data);
     return res.data;
 };
 

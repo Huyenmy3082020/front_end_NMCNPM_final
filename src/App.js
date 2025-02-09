@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Fragment } from 'react';
 import routes from './routes';
-import DefaultComponent from './components/DefaultComponent/DefaultComponent';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import * as Userservice from './service/Userservice';
@@ -110,7 +109,7 @@ const App = () => {
                 <Routes>
                     {routes.map((route, index) => {
                         const Page = route.page;
-                        const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+                        const Layout = route.isShowHeader ? Fragment : React.Fragment;
 
                         return (
                             <Route

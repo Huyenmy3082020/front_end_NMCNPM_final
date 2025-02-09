@@ -13,14 +13,10 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
-import HeaderComponent from '../HeaderComponent/HeaderComponent';
 import AdminProduct from '../AdminPageComponent/Lists/AdminProduct/AdminProduct';
 import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
 
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
-import HeaderPageAdminProduct from './HeaderPageAdmin/HederPageAdminProduct';
-import OrderPage from '../../pages/OrderPage/OrderPage';
-import AdminOrder from './Lists/AdminOrder/AdminOrder';
 const items = [
     {
         key: 'dashboard',
@@ -72,8 +68,7 @@ const renderPage = (key) => {
             return <AdminProduct></AdminProduct>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
-        case 'order':
-            return <AdminOrder></AdminOrder>;
+
         default: {
             return <></>;
         }

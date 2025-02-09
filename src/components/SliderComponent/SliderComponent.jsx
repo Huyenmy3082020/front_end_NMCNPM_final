@@ -8,8 +8,8 @@ function SliderComponent({ arrImg }) {
         infinite: true,
         focusOnSelect: true,
         speed: 2000,
-        slidesToShow: 2, // Hiển thị 2 slide
-        slidesToScroll: 2,
+        slidesToShow: 1,
+        slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 3000,
     };
@@ -19,17 +19,8 @@ function SliderComponent({ arrImg }) {
             {arrImg.map((img, index) => {
                 return (
                     <div key={index}>
-                        <div style={{ padding: '8px' }}>
-                            <Image
-                                src={img}
-                                alt="slider"
-                                preview={false}
-                                style={{
-                                    borderRadius: '10px',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            />
+                        <div>
+                            <Image src={img} alt="slider" preview={false} />
                         </div>
                     </div>
                 );
