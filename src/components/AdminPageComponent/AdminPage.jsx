@@ -28,7 +28,6 @@ const items = [
         label: 'User',
         icon: <UserOutlined />,
     },
-
     {
         key: 'product',
         label: 'Product',
@@ -44,16 +43,7 @@ const items = [
         label: 'Balance',
         icon: <BankOutlined></BankOutlined>,
     },
-    {
-        key: 'profile',
-        label: 'Profile',
-        icon: <ProfileOutlined></ProfileOutlined>,
-    },
-    {
-        key: 'setting',
-        label: 'Setting',
-        icon: <SettingOutlined></SettingOutlined>,
-    },
+
     {
         key: 'logout',
         label: 'Log out',

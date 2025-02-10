@@ -1,50 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
-import * as CategorySevice from '../../service/CategoriService';
-const ModalComponent = ({ isModalOpen, handleOk, handleCancel, onFinish, onFinishFailed }) => {
-    const [categories, setCategories] = useState([]);
+import * as ProductService from '../../service/Productservice';
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const data = await CategorySevice.getCategoryname();
-                setCategories(data); // Lưu danh sách vào state
-            } catch (error) {
-                console.error('Failed to fetch categories:', error);
-            }
-        };
+const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, categories, suppliers, onSuccess }) => {
+    const [form] = Form.useForm();
 
-        if (isModalOpen) {
-            fetchCategories();
+    const handleSubmit = async (values) => {
+        console.log('Received values of form: ', values);
+        onFinish(values);
+        form.resetFields();
+        try {
+            const res = await ProductService.createProduct(values);
+            console.log(res);
+            onSuccess(res.ingredient);
+        } catch (err) {
+            console.log(err);
         }
-    }, [isModalOpen]);
+    };
 
     return (
-        <Modal title="Tạo sản phẩm" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Modal title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
             <Form
+                form={form}
                 name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 style={{ maxWidth: 600 }}
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
+                onFinish={handleSubmit}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Name Product"
-                    name="Name"
-                    rules={[{ required: true, message: 'Please input your Name Product!' }]}
+                    label="Tên sản phẩm"
+                    name="name"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
                 >
-                    <Input placeholder="Enter name product" />
+                    <Input placeholder="Nhập tên sản phẩm" />
                 </Form.Item>
 
-                <Form.Item label="Image" name="image" rules={[{ required: true, message: 'Please input your image!' }]}>
-                    <Input placeholder="Enter image URL" />
-                </Form.Item>
-
-                <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please input your type!' }]}>
-                    <Select placeholder="Select a type">
+                <Form.Item
+                    label="Danh mục sản phẩm"
+                    name="category"
+                    rules={[{ required: true, message: 'Vui lòng chọn danh mục sản phẩm!' }]}
+                >
+                    <Select placeholder="Chọn danh mục sản phẩm">
                         {categories.map((category) => (
                             <Select.Option key={category._id} value={category.name}>
                                 {category.name}
@@ -53,53 +52,35 @@ const ModalComponent = ({ isModalOpen, handleOk, handleCancel, onFinish, onFinis
                     </Select>
                 </Form.Item>
 
-                <Form.Item label="Price" name="price" rules={[{ required: true, message: 'Please input your price!' }]}>
-                    <Input placeholder="Enter price" />
-                </Form.Item>
-
                 <Form.Item
-                    label="Count In Stock"
-                    name="countInStock"
-                    rules={[{ required: true, message: 'Please input your count in stock!' }]}
+                    label="Nhà cung cấp"
+                    name="supplier"
+                    rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp!' }]}
                 >
-                    <Input placeholder="Enter count in stock" />
+                    <Select placeholder="Chọn nhà cung cấp">
+                        {suppliers.map((supplier) => (
+                            <Select.Option key={supplier._id} value={supplier.name}>
+                                {supplier.name}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+
+                <Form.Item label="Giá" name="price" rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}>
+                    <Input placeholder="Nhập giá" />
                 </Form.Item>
 
                 <Form.Item
-                    label="Rating"
-                    name="rating"
-                    rules={[{ required: true, message: 'Please input your rating!' }]}
-                >
-                    <Input placeholder="Enter rating" />
-                </Form.Item>
-
-                <Form.Item
-                    label="Discount"
-                    name="discount"
-                    rules={[{ required: true, message: 'Please input your discount!' }]}
-                >
-                    <Input placeholder="Enter discount" />
-                </Form.Item>
-
-                <Form.Item
-                    label="Selled"
-                    name="selled"
-                    rules={[{ required: true, message: 'Please input your selled!' }]}
-                >
-                    <Input placeholder="Enter selled" />
-                </Form.Item>
-
-                <Form.Item
-                    label="Description"
+                    label="Mô tả"
                     name="description"
-                    rules={[{ required: true, message: 'Please input your description!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập mô tả sản phẩm!' }]}
                 >
-                    <Input placeholder="Enter description" />
+                    <Input placeholder="Nhập mô tả sản phẩm" />
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Thêm sản phẩm
                     </Button>
                 </Form.Item>
             </Form>

@@ -17,10 +17,10 @@ const TableComponent = ({ data }) => {
             sorter: (a, b) => a.name.length - b.name.length,
         },
         {
-            title: 'Imgae',
-            dataIndex: 'image',
-            key: 'image',
-            render: (image) => <img alt="product" src={`http://localhost:2000${image}`} style={{ width: 40 }} />,
+            title: 'description',
+            dataIndex: 'description',
+            key: 'description',
+            sorter: (a, b) => a.description.length - b.description.length,
         },
         {
             title: 'Price',
@@ -28,20 +28,10 @@ const TableComponent = ({ data }) => {
             key: 'price',
         },
         {
-            title: 'countInStock',
-            dataIndex: 'countInStock',
-            key: 'countInStock',
-        },
-        {
-            title: 'selled',
-            dataIndex: 'selled',
-            key: 'selled',
-        },
-        {
-            title: 'category',
-            dataIndex: 'category',
-            key: 'category',
-            render: (category) => category?.name,
+            title: 'categoryId',
+            dataIndex: 'categoryId',
+            key: 'categoryId',
+            render: (categoryId) => categoryId?.name,
         },
         {
             title: 'Actions',
@@ -93,11 +83,6 @@ const TableComponent = ({ data }) => {
         console.log('Selected Row Keys:', selectedKeys);
         setSelectedRowKeys(selectedKeys);
     };
-    const handleDeleteMany = async () => {
-        try {
-            await Productservice.deleteMany({ id: ['66e84f7d993cc5f7dad310a5', '66e91d3d94fbcf6d440a5ffb'] });
-        } catch (error) {}
-    };
 
     return (
         <div>
@@ -121,9 +106,7 @@ const TableComponent = ({ data }) => {
                 dataSource={data}
                 rowKey="_id"
             />
-            <Button type="primary" onClick={handleDeleteMany}>
-                Xoa tat
-            </Button>
+            <Button type="primary">Xoa tat</Button>
 
             <Modal
                 title={currentProduct ? 'Edit Product' : 'Create Product'}
