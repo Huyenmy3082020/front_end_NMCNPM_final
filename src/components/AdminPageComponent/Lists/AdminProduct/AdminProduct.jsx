@@ -1,55 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import * as Productservice from '../../../../service/Productservice.js';
-import * as CategoriService from '../../../../service/CategoriService';
-import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
+import * as CategoryService from '../../../../service/CategoriService.js';
 import TableComponent from '../../../TableComponent/TableComponent.jsx';
 import { useNavigate } from 'react-router-dom';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
-function AdminProduct() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [products, setProducts] = useState([]);
-    const [avatar, setAvatar] = useState('');
-    const [productType, setProductType] = useState('');
-    // State để lưu type
-    const [isAddProductVisible, setAddProductVisible] = useState(false);
+import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
 
-    const limit = 12;
+function AdminProduct() {
+    const [products, setProducts] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     useEffect(() => {
         const fetchProductAll = async () => {
             try {
-                const res = await Productservice.getAllProduct(limit);
-                setProducts(res.data || []);
+                const res = await Productservice.getAllIngredient();
+                setProducts(res.data.ingredients);
             } catch (error) {
                 console.error('Error fetching products:', error);
-            } finally {
             }
         };
 
         fetchProductAll();
     }, []);
-    const [category, setCategory] = useState('');
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const onFinish = (values) => {
+        console.log('Success:', values);
+        setIsModalOpen(false);
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
+    const [categories, setCategories] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
 
     useEffect(() => {
-        const fetchCategoryByName = async () => {
+        const fetchCategories = async () => {
             try {
-                const res = await CategoriService.getOrderByName(productType);
-                setCategory(res);
+                const res = await CategoryService.getAll();
+                console.log(res.categories);
+                setCategories(res.categories);
             } catch (error) {
-                console.error('Error fetching category:', error);
+                console.error('Error fetching categories:', error);
             }
         };
-
-        if (productType) {
-            fetchCategoryByName();
-        }
-    }, [productType]);
-
-    const navigate = useNavigate();
+        fetchCategories();
+    }, []);
+    useEffect(() => {
+        const fetchSuppliers = async () => {
+            try {
+                const res = await CategoryService.getAllSupplies();
+                console.log(res.suppliers);
+                setSuppliers(res.suppliers);
+            } catch (error) {
+                console.error('Error fetching suppliers:', error);
+            }
+        };
+        fetchSuppliers();
+    }, []);
+    const handleSuccess = (res) => {
+        console.log('Kết quả từ server:', res);
+        setProducts((prevProducts) => [...prevProducts, res]);
+    };
     return (
         <div>
-            <HeaderPageAdminProduct></HeaderPageAdminProduct>
+            <HeaderPageAdminProduct />
             <div style={{ backgroundColor: '#f4f4f4' }}>
                 <h1 style={{ fontSize: '2.6rem', marginLeft: '16px', paddingTop: '16px' }}>Thông tin sản phẩm</h1>
                 <Button
@@ -60,12 +90,24 @@ function AdminProduct() {
                         borderStyle: 'dashed',
                         marginLeft: '32px',
                     }}
-                    onClick={() => navigate('/add_product')} // Sử dụng navigate để chuyển hướng
+                    onClick={showModal} // Khi nhấn nút, modal sẽ mở
                 >
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
                 <TableComponent data={products} />
-                <a href="/product/trash">Thung rac</a>
+                <a href="/product/trash">Thùng rác</a>
+
+                {/* ModalComponent */}
+                <ModalComponent
+                    isModalOpen={isModalOpen}
+                    handleOk={handleOk}
+                    handleCancel={handleCancel}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    categories={categories}
+                    suppliers={suppliers}
+                    onSuccess={handleSuccess}
+                />
             </div>
         </div>
     );

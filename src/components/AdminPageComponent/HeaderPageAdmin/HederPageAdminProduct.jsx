@@ -1,11 +1,14 @@
 import Search from 'antd/es/transfer/search';
 import styles from '../../AdminPageComponent/HeaderPageAdmin/HeaderPageAdminProduct.module.scss';
 import { FullScreen, GiaoDien, MessageAdmin, Notification } from '../../IconComponent/IconComponent';
+import { AutoComplete } from 'antd';
+import AutoCompleteAdmin from '../HeaderPageAdmin/AutoCompleteAdmin';
+
 function HeaderPageAdminProduct() {
     return (
         <div className={styles.wrapper}>
             <div className={styles.wrapperList}>
-                <Search></Search>
+                <AutoCompleteAdmin></AutoCompleteAdmin>
             </div>
             <div className={styles.wrapperList}>
                 <div className={styles.wrapperItem}>
