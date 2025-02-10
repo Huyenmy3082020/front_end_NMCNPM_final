@@ -26,19 +26,19 @@ function SignInPage() {
             const data = await UserService.loginUser({ email, password });
             const decode = jwtDecode(data?.accessToken);
             const res = await getDetailUser(decode?.id, data?.accessToken);
-            dispatch(
-                updateUser({
-                    ...res?.data,
-                    access_token: token,
-                }),
-            );
+            // dispatch(
+            //     updateUser({
+            //         ...res?.data,
+            //         access_token: token,
+            //     }),
+            // );
         } catch (error) {}
     };
     return (
         <div className={styles.wrapper}>
             <div className={styles.wrapperList}>
                 <Row>
-                    <Col span={11}>
+                    <Col xs={24} sm={24} md={11}>
                         <div className={styles.wrapperItem1}>
                             <div>
                                 <div className={styles.formItem}>
