@@ -43,7 +43,7 @@ function SignUpPage() {
         <div className={styles.wrapper}>
             <div className={styles.wrapperList}>
                 <Row>
-                    <Col span={11}>
+                    <Col xs={24} sm={24} md={11}>
                         <div className={styles.wrapperItem1}>
                             <div>
                                 <div className={styles.formItem}>
@@ -117,7 +117,7 @@ function SignUpPage() {
                             </div>
                         </div>
                     </Col>
-                    <Col span={13}>
+                    <Col xs={0} sm={0} md={13}>
                         <div className={styles.wrapperItem}>
                             <SliderComponent arrImg={[slider1, slider2, slider3, slider4, slider5]} />
                         </div>

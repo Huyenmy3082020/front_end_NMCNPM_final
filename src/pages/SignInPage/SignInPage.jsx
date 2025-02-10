@@ -1,5 +1,6 @@
 import { Col, Row } from 'antd';
-import styles from '../../pages/SignUpPage/SignUpPage.module.scss';
+//import styles from '../../pages/SignUpPage/SignUpPage.module.scss';
+import styles from '../../pages/SignInPage/SignInPage.module.scss';
 import slider1 from '../../assets/slider/slider1.png';
 import slider2 from '../../assets/slider/slider2.png';
 import slider3 from '../../assets/slider/slider3.png';
@@ -26,19 +27,19 @@ function SignInPage() {
             const data = await UserService.loginUser({ email, password });
             const decode = jwtDecode(data?.accessToken);
             const res = await getDetailUser(decode?.id, data?.accessToken);
-            dispatch(
-                updateUser({
-                    ...res?.data,
-                    access_token: token,
-                }),
-            );
+            // dispatch(
+            //     updateUser({
+            //         ...res?.data,
+            //         access_token: token,
+            //     }),
+            // );
         } catch (error) {}
     };
     return (
         <div className={styles.wrapper}>
             <div className={styles.wrapperList}>
                 <Row>
-                    <Col span={11}>
+                    <Col xs={24} sm={24} md={11}>
                         <div className={styles.wrapperItem1}>
                             <div>
                                 <div className={styles.formItem}>
@@ -116,13 +117,13 @@ function SignInPage() {
                             <div className={styles.wrapperInfo}>
                                 <div>
                                     <button className={styles.wrapperButtonGoogle}>
-                                        <div style={{ marginLeft: '150px' }}>
+                                        
                                             <img
                                                 src="data:image/png;base64,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"
-                                                width={60}
+                                                width={40}
                                             ></img>
-                                            <span>Đăng ký bằng apple</span>
-                                        </div>
+                                            <span style={{marginLeft: '150px'}}>Đăng ký bằng apple</span>
+                                        
                                     </button>
                                 </div>
                             </div>
@@ -133,7 +134,7 @@ function SignInPage() {
                             </div>
                         </div>
                     </Col>
-                    <Col span={13}>
+                    <Col  xs={0} sm={0} md={13}>
                         <div className={styles.wrapperItem}>
                             <SliderComponent arrImg={[slider1, slider2, slider3, slider4, slider5]} />
                         </div>
