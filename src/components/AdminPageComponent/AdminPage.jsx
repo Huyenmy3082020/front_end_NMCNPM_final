@@ -15,7 +15,7 @@ import {
 import { Menu } from 'antd';
 import AdminProduct from '../AdminPageComponent/Lists/AdminProduct/AdminProduct';
 import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
-
+import styles from './AdminPage.module.scss';
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
 const items = [
     {
@@ -73,9 +73,10 @@ const App = () => {
 
     return (
         <>
-            <div style={{ display: 'flex' }}>
+            <div className={styles.container}>
                 <Menu
                     onClick={onClick}
+                    className={styles.menu}
                     style={{
                         width: 256,
                     }}
@@ -84,7 +85,7 @@ const App = () => {
                     mode="inline"
                     items={items}
                 />
-                <div style={{ width: '1260px' }}>{renderPage(selectedKey)}</div>
+                <div className={styles.content}>{renderPage(selectedKey)}</div>
             </div>
         </>
     );
