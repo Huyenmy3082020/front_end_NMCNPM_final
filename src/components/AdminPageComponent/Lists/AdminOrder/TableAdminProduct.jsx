@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'antd';
+import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input, InputNumber } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import * as Productservice from '../../../../service/Productservice';
 
-const TableAdminProduct = ({ data }) => {
+const TableAdminProduct = ({ data, onUpdateQuantity }) => {
     const [selectionType, setSelectionType] = useState('checkbox');
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState(null);
+
+    const handlChange = (value) => {
+        console.log('Giá trị nhập:', value);
+    };
 
     const columns = () => [
         {
@@ -28,11 +32,16 @@ const TableAdminProduct = ({ data }) => {
             key: 'price',
         },
         {
-            title: 'So luong',
-            dataIndex: 'customInput',
-            key: 'customInput',
+            title: 'Số lượng',
+            dataIndex: 'quantity',
+            key: 'quantity',
             render: (_, record) => (
-                <Input placeholder="Nhập dữ liệu" defaultValue={record.name} style={{ width: '40px' }} />
+                <InputNumber
+                    min={1}
+                    defaultValue={record.quantity || 1}
+                    onChange={(value) => onUpdateQuantity(record._id, value)}
+                    style={{ width: '100px' }}
+                />
             ),
         },
 

@@ -2,7 +2,7 @@ import { Dropdown } from 'antd';
 import styles from './FooterAdmin.module.scss';
 import DropdownPage from '../Dropdown/Dropdown';
 
-function FooterAdmin() {
+function FooterAdmin({ selectedProduct }) {
     return (
         <div className={styles.wrapperList}>
             <div className={styles.footerLeft}>
@@ -10,7 +10,7 @@ function FooterAdmin() {
                 <p className={styles.paymentMethod}>📦 COD</p>
             </div>
             <div className={styles.footerRight}>
-                <DropdownPage />
+                <DropdownPage selectedProduct={selectedProduct} />
             </div>
         </div>
     );

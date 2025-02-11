@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
 export const createOrder = async (data) => {
     try {
         console.log(data);
-        const res = await axiosInstance.post(`/order/createOrder`, data);
+        const res = await axiosInstance.post(`good`, data);
         return res.data;
     } catch (error) {
         console.error('Error creating order:', error.response || error.message || error);
@@ -45,5 +45,3 @@ export const deleteOrder = async (id) => {
         throw new Error('Failed to delete order');
     }
 };
-
-

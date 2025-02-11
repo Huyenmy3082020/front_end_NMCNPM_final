@@ -39,9 +39,6 @@ function AdminOrder() {
         fetchOrders();
     }, []);
 
-    const handleSelectProduct = (product) => {
-        setSelectedProduct((prev) => [...prev, product]);
-    };
     const menuItemStyle = {
         display: 'block',
         width: '100%',
@@ -54,6 +51,18 @@ function AdminOrder() {
         fontSize: '14px',
     };
     console.log('selectedProduct:', selectedProduct);
+    const handleUpdateQuantity = (id, value) => {
+        setSelectedProduct((prev) =>
+            prev.map((product) => (product._id === id ? { ...product, quantity: value } : product)),
+        );
+    };
+
+    const handleSelectProduct = (product) => {
+        setSelectedProduct((prev) => {
+            const isExist = prev.some((item) => item._id === product._id);
+            return isExist ? prev : [...prev, { ...product, quantity: 1 }];
+        });
+    };
     return (
         <div>
             <HeaderPageAdminProduct />
@@ -62,11 +71,11 @@ function AdminOrder() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
                     </div>
-                    <TableAdminProduct data={selectedProduct} />
+                    <TableAdminProduct data={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
                 </div>
             </div>
             <div>
-                <FooterAdmin></FooterAdmin>
+                <FooterAdmin selectedProduct={selectedProduct}></FooterAdmin>
             </div>
         </div>
     );
