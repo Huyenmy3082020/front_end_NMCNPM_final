@@ -4,11 +4,11 @@ import { FullScreen, GiaoDien, MessageAdmin, Notification } from '../../IconComp
 import { AutoComplete } from 'antd';
 import AutoCompleteAdmin from '../HeaderPageAdmin/AutoCompleteAdmin';
 
-function HeaderPageAdminProduct() {
+function HeaderPageAdminProduct({ onSelectProduct }) {
     return (
         <div className={styles.wrapper}>
             <div className={styles.wrapperList}>
-                <AutoCompleteAdmin></AutoCompleteAdmin>
+                <AutoCompleteAdmin onSelectProduct={onSelectProduct} />
             </div>
             <div className={styles.wrapperList}>
                 <div className={styles.wrapperItem}>

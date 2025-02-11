@@ -3,7 +3,7 @@ import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'a
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import * as Productservice from '../../service/Productservice';
 
-const TableComponent = ({ data }) => {
+const TableComponent = ({ data, isActionEdit }) => {
     const [selectionType, setSelectionType] = useState('checkbox');
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -95,7 +95,6 @@ function AdminProduct() {
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
                 <TableComponent data={products} />
-                <a href="/product/trash">Thùng rác</a>
 
                 {/* ModalComponent */}
                 <ModalComponent
