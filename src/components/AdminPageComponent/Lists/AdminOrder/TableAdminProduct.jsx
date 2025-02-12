@@ -1,35 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input, InputNumber } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import * as Productservice from '../../../../service/Productservice';
+import { Table, Button, Popconfirm, InputNumber, message } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOrder } from '../../../../redux/slides/OrderSlide';
+import { formatVND } from '../../../../ultil/index';
+import * as ProductService from '../../../../service/Productservice';
 
-const TableAdminProduct = ({ data, onUpdateQuantity }) => {
-    const [selectionType, setSelectionType] = useState('checkbox');
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentProduct, setCurrentProduct] = useState(null);
+const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
+    const dispatch = useDispatch();
+    const order = useSelector((state) => state.order.items);
+    console.log(order);
+    const [totalPrice, setTotalPrice] = useState(0);
 
-    const handlChange = (value) => {
-        console.log('Giá trị nhập:', value);
+    const handleDelete = async (id) => {
+        try {
+            await ProductService.deleteProduct(id);
+            message.success('Xóa sản phẩm thành công!');
+        } catch (error) {
+            message.error('Xóa sản phẩm thất bại!');
+        }
     };
 
-    const columns = () => [
+    const columns = [
         {
-            title: 'Name',
+            title: 'Tên sản phẩm',
             dataIndex: 'name',
             key: 'name',
-            sorter: (a, b) => a.name.length - b.name.length,
         },
         {
-            title: 'description',
+            title: 'Mô tả',
             dataIndex: 'description',
             key: 'description',
-            sorter: (a, b) => a.description.length - b.description.length,
+            render: (text) => <span style={{ fontSize: '13px' }}>{text}</span>,
         },
         {
-            title: 'Price',
+            title: 'Giá',
             dataIndex: 'price',
             key: 'price',
+            render: (price) => <strong>{formatVND(price)}</strong>,
         },
         {
             title: 'Số lượng',
@@ -38,90 +46,37 @@ const TableAdminProduct = ({ data, onUpdateQuantity }) => {
             render: (_, record) => (
                 <InputNumber
                     min={1}
-                    defaultValue={record.quantity || 1}
+                    value={record.quantity}
                     onChange={(value) => onUpdateQuantity(record._id, value)}
-                    style={{ width: '100px' }}
+                    style={{ width: '80px' }}
                 />
             ),
         },
-
         {
-            title: 'categoryId',
+            title: 'Danh mục',
             dataIndex: 'categoryId',
             key: 'categoryId',
-            render: (categoryId) => categoryId?.name,
+            render: (categoryId) => categoryId?.name || 'Chưa có danh mục',
         },
-
         {
-            title: 'Actions',
+            title: 'Hành động',
             key: 'actions',
             render: (_, record) => (
-                <div>
-                    <Popconfirm
-                        title="Are you sure you want to delete this item?"
-                        onConfirm={() => handleDelete(record._id)}
-                    >
-                        <Button icon={<DeleteOutlined />} type="danger">
-                            Delete
-                        </Button>
-                    </Popconfirm>
-                </div>
+                <Popconfirm title="Bạn có chắc muốn xóa sản phẩm này?" onConfirm={() => handleDelete(record._id)}>
+                    <Button icon={<DeleteOutlined />} danger>
+                        Xóa
+                    </Button>
+                </Popconfirm>
             ),
         },
     ];
 
-    const handleOk = () => {
-        setIsModalOpen(false);
-        setCurrentProduct(null);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        setCurrentProduct(null);
-    };
-
-    const handleEdit = (product) => {
-        setCurrentProduct(product);
-        setIsModalOpen(true);
-    };
-
-    const handleDelete = (id) => {
-        Productservice.deleteProduct(id);
-    };
-
-    const onFinish = (values) => {};
-
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-
-    const handleSelectChange = (selectedKeys) => {
-        console.log('Selected Row Keys:', selectedKeys);
-        setSelectedRowKeys(selectedKeys);
-    };
-
     return (
         <div>
-            <Radio.Group
-                onChange={({ target: { value } }) => {
-                    setSelectionType(value);
-                    setSelectedRowKeys([]);
-                }}
-                value={selectionType}
-            ></Radio.Group>
-
-            <Divider />
-
-            <Table
-                rowSelection={{
-                    type: selectionType,
-                    selectedRowKeys,
-                    onChange: handleSelectChange,
-                }}
-                columns={columns()}
-                dataSource={data}
-                rowKey="_id"
-            />
+            <Table columns={columns} dataSource={selectedProduct} rowKey="_id" pagination={false} />
+            <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold' }}>
+                Tổng tiền: {formatVND(totalPrice)}
+            </div>
         </div>
     );
 };

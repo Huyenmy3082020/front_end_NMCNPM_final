@@ -1,56 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import * as OrderService from '../../../../service/OrderService.js';
-import TableAdminProduct from './TableAdminProduct.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
-import * as Productservice from '../../../../service/Productservice.js';
-import TableComponent from '../../../TableComponent/TableComponent.jsx';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css'; // Import CSS mặc định của Tippy
-import { Select } from 'antd';
-import styles from './AdminOrder.module.scss';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/light.css'; // Đảm bảo có file này
-import Dropdown from '../../Dropdown/Dropdown.jsx';
-import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
 import AutoCompleteAdmin from '../../HeaderPageAdmin/AutoCompleteAdmin.jsx';
+import TableAdminProduct from './TableAdminProduct.jsx';
+import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
+import * as OrderService from '../../../../service/OrderService.js';
 
 function AdminOrder() {
-    const [orders, setOrders] = useState([]);
-    const navigate = useNavigate();
     const [selectedProduct, setSelectedProduct] = useState([]);
-    const { Option } = Select;
+    const dispatch = useDispatch();
+    const [isActionImport, setIsActionImport] = useState(false);
 
-    const handleSelectChange = (value) => {
-        console.log('Sản phẩm đã chọn:', value);
-    };
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const res = await OrderService.getOrder();
-                console.log(res);
-                setOrders(res.data); // Lưu danh sách orders
-            } catch (error) {
-                console.error('Error fetching orders:', error);
-            }
-        };
+        if (isActionImport) {
+            setSelectedProduct([]);
+            setIsActionImport(false);
+        }
+    }, [isActionImport]);
 
-        fetchOrders();
-    }, []);
-
-    const menuItemStyle = {
-        display: 'block',
-        width: '100%',
-        padding: '8px 12px',
-        textAlign: 'left',
-        background: 'none',
-        border: 'none',
-        color: '#333',
-        cursor: 'pointer',
-        fontSize: '14px',
-    };
-    console.log('selectedProduct:', selectedProduct);
     const handleUpdateQuantity = (id, value) => {
         setSelectedProduct((prev) =>
             prev.map((product) => (product._id === id ? { ...product, quantity: value } : product)),
@@ -60,8 +27,17 @@ function AdminOrder() {
     const handleSelectProduct = (product) => {
         setSelectedProduct((prev) => {
             const isExist = prev.some((item) => item._id === product._id);
-            return isExist ? prev : [...prev, { ...product, quantity: 1 }];
+            if (!isExist) {
+                const newProducts = [...prev, { ...product, quantity: 1 }];
+
+                return newProducts;
+            }
+            return prev;
         });
+    };
+
+    const handleAlo = async () => {
+        setSelectedProduct([]);
     };
     return (
         <div>
@@ -71,12 +47,14 @@ function AdminOrder() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
                     </div>
-                    <TableAdminProduct data={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
+                    <TableAdminProduct selectedProduct={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
                 </div>
             </div>
-            <div>
-                <FooterAdmin selectedProduct={selectedProduct}></FooterAdmin>
-            </div>
+            <FooterAdmin
+                selectedProduct={selectedProduct}
+                isActionImport={isActionImport}
+                setIsActionImport={setIsActionImport}
+            />
         </div>
     );
 }

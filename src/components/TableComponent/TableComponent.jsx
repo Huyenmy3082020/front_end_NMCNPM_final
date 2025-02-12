@@ -38,7 +38,7 @@ const TableComponent = ({ data, isActionEdit }) => {
             key: 'actions',
             render: (_, record) => (
                 <div>
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} style={{ marginRight: 8 }}>
+                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record._id)} style={{ marginRight: 8 }}>
                         Edit
                     </Button>
                     <Popconfirm
@@ -64,13 +64,25 @@ const TableComponent = ({ data, isActionEdit }) => {
         setCurrentProduct(null);
     };
 
-    const handleEdit = (product) => {
-        setCurrentProduct(product);
-        setIsModalOpen(true);
+    const handleEdit = (id, values) => {
+        // // lay dc id
+        // console.log('Edit product:', id);
+        // try {
+        //     // goi api sua
+        // } catch (error) {}
+        // setCurrentProduct(product);
+        // setIsModalOpen(true);
     };
 
-    const handleDelete = (id) => {
-        Productservice.deleteProduct(id);
+    const handleDelete = async (id) => {
+        try {
+            console.log('Delete product:', id);
+
+            const res = await Productservice.deleteProduct(id);
+            console.log(res);
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        }
     };
 
     const onFinish = (values) => {};

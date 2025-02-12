@@ -1,46 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Space, message } from 'antd';
 import * as OrderService from '../../../service/OrderService';
+import { formatVND } from '../../../ultil/index';
+import { useDispatch, useSelector } from 'react-redux';
 
-const DropdownPage = ({ selectedProduct }) => {
-    console.log('Danh sách sản phẩm trong Dropdown:', selectedProduct);
+const DropdownPage = ({ selectedProduct, handleTotalPrice, isActionImport, setIsActionImport }) => {
+    const [totalPrice, setTotalPrice] = useState(0);
+    const dispatch = useDispatch();
+
+    console.log('setIsActionImport,setIsActionImpo', isActionImport);
+
+    useEffect(() => {
+        let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
+        setTotalPrice(formatVND(total));
+        handleTotalPrice(total);
+    }, [selectedProduct]);
 
     const handleMenuClick = async (label) => {
         if (label === 'Nhập hàng') {
-            if (selectedProduct.length === 0) {
+            if (!selectedProduct || selectedProduct.length === 0) {
                 message.warning('Vui lòng chọn ít nhất một sản phẩm!');
                 return;
             }
 
-            // {
-            //     "userId": "65c6a7f9e8b3f2d5a4c12345",
-            //     "items": [
-            //       {
-            //         "ingredientsId": "67a974febc0b7959c7e5c3c2",
-            //         "quantity": 2,
-            //         "status": "pending"
-            //       },
-            //       {
-            //         "ingredientsId": "67a9750cbc0b7959c7e5c3c4",
-            //         "quantity": 5,
-            //         "status": "pending"
-            //       }
-            //     ],
-            //     "createdAt": "2025-02-10T12:00:00.000Z",
-            //     "updatedAt": "2025-02-10T12:30:00.000Z"
-            //   }
+            const data = {
+                userId: '65c6a7f9e8b3f2d5a4c12345',
+                items: selectedProduct.map((product) => ({
+                    ingredientsId: product._id,
+                    quantity: product.quantity || 1,
+                    status: 'pending',
+                })),
+                totalPrice: totalPrice,
+            };
 
             message.info('Đang nhập hàng...');
             try {
-                const res = await OrderService.createOrder({ selectedProduct }); // Gửi sản phẩm lên API
-                console.log('Kết quả API:', res);
+                const res = await OrderService.createOrder(data);
                 message.success('Nhập hàng thành công!');
+                setIsActionImport(true);
             } catch (error) {
                 message.error('Tạo đơn hàng thất bại');
-                console.error(error);
             }
-        } else if (label === 'Gửi hàng đi') {
-            message.info('Đã gửi hàng đi thành công');
         }
     };
 
