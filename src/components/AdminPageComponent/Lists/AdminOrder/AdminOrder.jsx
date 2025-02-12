@@ -38,6 +38,7 @@ function AdminOrder() {
 
     const handleAlo = async () => {
         setSelectedProduct([]);
+        console.log('alo');
     };
     return (
         <div>
