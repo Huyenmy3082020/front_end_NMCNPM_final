@@ -9,7 +9,6 @@ import * as ProductService from '../../../../service/Productservice';
 const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     const dispatch = useDispatch();
     const order = useSelector((state) => state.order.items);
-    console.log(order);
     const [totalPrice, setTotalPrice] = useState(0);
 
     const handleDelete = async (id) => {
