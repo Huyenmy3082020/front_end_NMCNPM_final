@@ -4,6 +4,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../../../redux/slides/OrderSlide';
 import { formatVND } from '../../../../ultil/index';
+
 import * as OrderService from '../../../../service/OrderService';
 
 const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
@@ -70,6 +71,10 @@ const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
         },
     ];
 
+    useEffect(() => {
+        let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
+        setTotalPrice(formatVND(total));
+    }, [selectedProduct]);
     return (
         <div>
             <Table columns={columns} dataSource={selectedProduct} rowKey="_id" pagination={false} />

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'antd';
 import { EditOutlined, DeleteOutlined, FolderViewOutlined } from '@ant-design/icons';
-
 const TableUser = ({ data }) => {
     const [selectionType, setSelectionType] = useState('checkbox');
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -81,6 +80,7 @@ const TableUser = ({ data }) => {
                 columns={columns()}
                 dataSource={data}
                 rowKey="_id"
+                scroll={{ x: 'max-content' }} //kích hoạt cuộn ngang
             />
         </div>
     );

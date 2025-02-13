@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import * as Userservice from './service/Userservice';
 import { useDispatch } from 'react-redux';
-import { logout, updateUser } from './redux/slides/userSlide';
+import { logout, updateUser } from './redux/slides/UserSlideV1';
 import { resetCard } from './redux/slides/CartSlide';
 
 const queryClient = new QueryClient();
@@ -24,6 +24,7 @@ const App = () => {
     const handleGetDetailUser = async (id, token) => {
         try {
             const res = await Userservice.getDetailUser(id, token);
+            console.log(res.data);
             dispatch(updateUser({ ...res.data, access_token: token }));
         } catch (error) {
             if (error.response?.status === 401) {
@@ -43,7 +44,6 @@ const App = () => {
         if (storageData) {
             try {
                 decode = jwtDecode(storageData);
-                console.log(decode);
             } catch (error) {
                 console.error('Error decoding token:', error);
             }
@@ -56,7 +56,7 @@ const App = () => {
             const { data } = await Userservice.refreshToken();
             if (data?.access_token) {
                 console.log('data.access_token', data.access_token);
-                // Lưu token mới vào localStorage
+
                 localStorage.setItem('access_token', data.access_token);
                 return data.access_token;
             }
@@ -79,7 +79,7 @@ const App = () => {
                         config.headers['authorization'] = `Bearer ${newToken}`;
                     } else {
                         dispatch(logout());
-                        dispatch(resetCard());
+
                         console.error('Failed to refresh token. No access_token returned.');
                     }
                 } else {
