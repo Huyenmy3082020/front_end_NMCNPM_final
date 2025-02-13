@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../../../redux/slides/OrderSlide';
 import { formatVND } from '../../../../ultil/index';
 import * as ProductService from '../../../../service/Productservice';
-
 const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     const dispatch = useDispatch();
     const order = useSelector((state) => state.order.items);
@@ -70,6 +69,10 @@ const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
         },
     ];
 
+    useEffect(() => {
+        let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
+        setTotalPrice(formatVND(total));
+    }, [selectedProduct]);
     return (
         <div>
             <Table columns={columns} dataSource={selectedProduct} rowKey="_id" pagination={false} />

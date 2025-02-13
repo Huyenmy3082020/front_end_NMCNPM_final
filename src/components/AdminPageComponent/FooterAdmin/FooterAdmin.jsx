@@ -5,7 +5,7 @@ import DropdownPage from '../Dropdown/Dropdown';
 import { formatVND } from '../../../ultil/index';
 import { setOrder } from '../../../redux/slides/OrderSlide';
 
-function FooterAdmin({ selectedProduct, isActionImport, setIsActionImport }) {
+function FooterAdmin({ selectedProduct, isActionImport, setIsActionImport, deliveryAddress, setDeliveryAddress }) {
     const [calculatedTotalPrice, setCalculatedTotalPrice] = useState(0);
 
     // Hàm cập nhật tổng tiền
@@ -24,6 +24,8 @@ function FooterAdmin({ selectedProduct, isActionImport, setIsActionImport }) {
                     handleTotalPrice={handleTotalPrice}
                     isActionImport={isActionImport}
                     setIsActionImport={setIsActionImport}
+                    deliveryAddress={deliveryAddress}
+                    setDeliveryAddress={setDeliveryAddress}
                 />
             </div>
         </div>

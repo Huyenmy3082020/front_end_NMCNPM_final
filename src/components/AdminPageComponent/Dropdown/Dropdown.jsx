@@ -4,11 +4,15 @@ import * as OrderService from '../../../service/OrderService';
 import { formatVND } from '../../../ultil/index';
 import { useDispatch, useSelector } from 'react-redux';
 
-const DropdownPage = ({ selectedProduct, handleTotalPrice, isActionImport, setIsActionImport }) => {
+const DropdownPage = ({
+    selectedProduct,
+    handleTotalPrice,
+    isActionImport,
+    setIsActionImport,
+    deliveryAddress,
+    setDeliveryAddress,
+}) => {
     const [totalPrice, setTotalPrice] = useState(0);
-    const dispatch = useDispatch();
-
-    console.log('setIsActionImport,setIsActionImpo', isActionImport);
 
     useEffect(() => {
         let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
@@ -31,12 +35,14 @@ const DropdownPage = ({ selectedProduct, handleTotalPrice, isActionImport, setIs
                     status: 'pending',
                 })),
                 totalPrice: totalPrice,
+                deliveryAddress: deliveryAddress,
             };
 
             message.info('Đang nhập hàng...');
             try {
-                const res = await OrderService.createOrder(data);
+                await OrderService.createOrder(data);
                 message.success('Nhập hàng thành công!');
+                setDeliveryAddress('');
                 setIsActionImport(true);
             } catch (error) {
                 message.error('Tạo đơn hàng thất bại');

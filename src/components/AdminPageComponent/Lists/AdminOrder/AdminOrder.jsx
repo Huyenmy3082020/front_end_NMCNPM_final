@@ -4,12 +4,15 @@ import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.
 import AutoCompleteAdmin from '../../HeaderPageAdmin/AutoCompleteAdmin.jsx';
 import TableAdminProduct from './TableAdminProduct.jsx';
 import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
-import * as OrderService from '../../../../service/OrderService.js';
+import * as Userservice from '../../../../service/Userservice.js';
+import { logout } from '../../../../redux/slides/UserSlideV1.js';
 
 function AdminOrder() {
     const [selectedProduct, setSelectedProduct] = useState([]);
     const dispatch = useDispatch();
     const [isActionImport, setIsActionImport] = useState(false);
+    const state = useSelector((state) => state);
+    console.log('Redux State:', state);
 
     useEffect(() => {
         if (isActionImport) {
@@ -40,12 +43,22 @@ function AdminOrder() {
         setSelectedProduct([]);
         console.log('alo');
     };
+    const [deliveryAddress, setDeliveryAddress] = useState('');
+    console.log(deliveryAddress);
+
     return (
         <div>
             <HeaderPageAdminProduct />
             <div style={{ padding: '20px', backgroundColor: '#f0f2f5' }}>
                 <div style={{ backgroundColor: '#fff', borderRadius: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
+                        <input
+                            type="text"
+                            value={deliveryAddress}
+                            onChange={(e) => setDeliveryAddress(e.target.value)}
+                            placeholder="Nhập địa chỉ"
+                        />
+
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
                     </div>
                     <TableAdminProduct selectedProduct={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
@@ -55,6 +68,8 @@ function AdminOrder() {
                 selectedProduct={selectedProduct}
                 isActionImport={isActionImport}
                 setIsActionImport={setIsActionImport}
+                deliveryAddress={deliveryAddress}
+                setDeliveryAddress={setDeliveryAddress}
             />
         </div>
     );

@@ -18,11 +18,15 @@ import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
 
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
 import AdminOrder from './Lists/AdminOrder/AdminOrder';
+import { useDispatch, useSelector } from 'react-redux';
+import UserService from '../../../src/service/Userservice';
+import { logout } from '../../redux/slides/UserSlideV1';
+import { IconDashboard } from '../IconComponent/IconComponent';
 const items = [
     {
         key: 'dashboard',
         label: 'Dashboard',
-        icon: <DashboardFilled />,
+        icon: <IconDashboard></IconDashboard>,
     },
     {
         key: 'user',
@@ -44,13 +48,13 @@ const items = [
         label: 'Balance',
         icon: <BankOutlined></BankOutlined>,
     },
-
     {
-        key: 'logout',
-        label: 'Log out',
-        icon: <LogoutOutlined></LogoutOutlined>,
+        key: 'balance',
+        label: 'Balance',
+        icon: <BankOutlined></BankOutlined>,
     },
 ];
+
 const renderPage = (key) => {
     switch (key) {
         case 'user':
@@ -61,7 +65,6 @@ const renderPage = (key) => {
             return <AdminOrder></AdminOrder>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
-
         default: {
             return <></>;
         }
