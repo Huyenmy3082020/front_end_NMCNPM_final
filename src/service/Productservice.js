@@ -15,7 +15,7 @@ export const createProduct = async (data) => {
 };
 
 export const deleteProduct = async (id) => {
-    const res = await axiosInstance.delete(`product/deleteProduct/${id}`);
+    const res = await axiosInstance.delete(`ingredient/${id}`);
     return res.data;
 };
 

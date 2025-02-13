@@ -17,6 +17,7 @@ import AdminProduct from '../AdminPageComponent/Lists/AdminProduct/AdminProduct'
 import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
 import styles from './AdminPage.module.scss';
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
+import AdminOrder from './Lists/AdminOrder/AdminOrder';
 const items = [
     {
         key: 'dashboard',
@@ -56,6 +57,8 @@ const renderPage = (key) => {
             return <AdminUser></AdminUser>;
         case 'product':
             return <AdminProduct></AdminProduct>;
+        case 'order':
+            return <AdminOrder></AdminOrder>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
 

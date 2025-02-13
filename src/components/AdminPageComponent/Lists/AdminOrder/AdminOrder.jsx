@@ -1,40 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Tag } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import * as OrderService from '../../../../service/OrderService.js';
-import TableAdminProduct from './TableAdminProduct.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
+import AutoCompleteAdmin from '../../HeaderPageAdmin/AutoCompleteAdmin.jsx';
+import TableAdminProduct from './TableAdminProduct.jsx';
+import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
+import * as OrderService from '../../../../service/OrderService.js';
 
 function AdminOrder() {
-    const [orders, setOrders] = useState([]);
-    const navigate = useNavigate();
+    const [selectedProduct, setSelectedProduct] = useState([]);
+    const dispatch = useDispatch();
+    const [isActionImport, setIsActionImport] = useState(false);
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const res = await OrderService.getOrder();
-                console.log(res);
-                setOrders(res.data); // Assuming response contains `data` with order items
-            } catch (error) {
-                console.error('Error fetching orders:', error);
+        if (isActionImport) {
+            setSelectedProduct([]);
+            setIsActionImport(false);
+        }
+    }, [isActionImport]);
+
+    const handleUpdateQuantity = (id, value) => {
+        setSelectedProduct((prev) =>
+            prev.map((product) => (product._id === id ? { ...product, quantity: value } : product)),
+        );
+    };
+
+    const handleSelectProduct = (product) => {
+        setSelectedProduct((prev) => {
+            const isExist = prev.some((item) => item._id === product._id);
+            if (!isExist) {
+                const newProducts = [...prev, { ...product, quantity: 1 }];
+
+                return newProducts;
             }
-        };
+            return prev;
+        });
+    };
 
-        fetchOrders();
-    }, []);
-
-    console.log('orders:', orders);
-
+    const handleAlo = async () => {
+        setSelectedProduct([]);
+        console.log('alo');
+    };
     return (
         <div>
-            <HeaderPageAdminProduct></HeaderPageAdminProduct>
-            <div style={{ backgroundColor: '#f4f4f4' }}>
-                <h1 style={{ fontSize: '2.6rem', paddingLeft: '16px', paddingTop: '16px' }}>Order Information</h1>
-
-                <TableAdminProduct data={orders} />
-                <a href="/product/trash">Trash</a>
+            <HeaderPageAdminProduct />
+            <div style={{ padding: '20px', backgroundColor: '#f0f2f5' }}>
+                <div style={{ backgroundColor: '#fff', borderRadius: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
+                        <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
+                    </div>
+                    <TableAdminProduct selectedProduct={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
+                </div>
             </div>
+            <FooterAdmin
+                selectedProduct={selectedProduct}
+                isActionImport={isActionImport}
+                setIsActionImport={setIsActionImport}
+            />
         </div>
     );
 }

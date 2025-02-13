@@ -73,8 +73,8 @@ function AdminProduct() {
         };
         fetchSuppliers();
     }, []);
+    /// Thêm sản phẩm vào danh sách
     const handleSuccess = (res) => {
-        console.log('Kết quả từ server:', res);
         setProducts((prevProducts) => [...prevProducts, res]);
     };
     return (
@@ -95,7 +95,6 @@ function AdminProduct() {
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
                 <TableComponent data={products} />
-                <a href="/product/trash">Thùng rác</a>
 
                 {/* ModalComponent */}
                 <ModalComponent

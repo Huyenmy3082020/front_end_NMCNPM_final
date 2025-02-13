@@ -1,63 +1,83 @@
-import React from 'react';
-import { Table, Button, Popconfirm } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Popconfirm, InputNumber, message } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOrder } from '../../../../redux/slides/OrderSlide';
+import { formatVND } from '../../../../ultil/index';
+import * as ProductService from '../../../../service/Productservice';
 
-const columns = [
-    {
-        title: 'Order ID',
-        dataIndex: '_id',
-        key: '_id',
-    },
-    {
-        title: 'Quantity',
-        dataIndex: 'orderItems',
-        key: 'quantity',
-        render: (orderItems) => {
-            return (
-                orderItems?.map((item, index) => {
-                    return (
-                        <div key={index}>
-                            Số lượng sản phẩm {index + 1}: {item.quantity}
-                        </div>
-                    );
-                }) || 'No name'
-            );
+const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
+    const dispatch = useDispatch();
+    const order = useSelector((state) => state.order.items);
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    const handleDelete = async (id) => {
+        try {
+            await ProductService.deleteProduct(id);
+            message.success('Xóa sản phẩm thành công!');
+        } catch (error) {
+            message.error('Xóa sản phẩm thất bại!');
+        }
+    };
+
+    const columns = [
+        {
+            title: 'Tên sản phẩm',
+            dataIndex: 'name',
+            key: 'name',
         },
-    },
-    {
-        title: 'Payment Method',
-        dataIndex: 'paymentMethos',
-        key: 'paymentMethos',
-    },
-
-    {
-        title: 'Name',
-        dataIndex: 'orderItems',
-        key: 'name',
-        render: (orderItems) => {
-            return (
-                orderItems?.map((item, index) => {
-                    return (
-                        <div key={index}>
-                            Sản phẩm {index + 1}: {item.name}
-                        </div>
-                    );
-                }) || 'No name'
-            );
+        {
+            title: 'Mô tả',
+            dataIndex: 'description',
+            key: 'description',
+            render: (text) => <span style={{ fontSize: '13px' }}>{text}</span>,
         },
-    },
+        {
+            title: 'Giá',
+            dataIndex: 'price',
+            key: 'price',
+            render: (price) => <strong>{formatVND(price)}</strong>,
+        },
+        {
+            title: 'Số lượng',
+            dataIndex: 'quantity',
+            key: 'quantity',
+            render: (_, record) => (
+                <InputNumber
+                    min={1}
+                    value={record.quantity}
+                    onChange={(value) => onUpdateQuantity(record._id, value)}
+                    style={{ width: '80px' }}
+                />
+            ),
+        },
+        {
+            title: 'Danh mục',
+            dataIndex: 'categoryId',
+            key: 'categoryId',
+            render: (categoryId) => categoryId?.name || 'Chưa có danh mục',
+        },
+        {
+            title: 'Hành động',
+            key: 'actions',
+            render: (_, record) => (
+                <Popconfirm title="Bạn có chắc muốn xóa sản phẩm này?" onConfirm={() => handleDelete(record._id)}>
+                    <Button icon={<DeleteOutlined />} danger>
+                        Xóa
+                    </Button>
+                </Popconfirm>
+            ),
+        },
+    ];
 
-    {
-        title: 'Total Price',
-        dataIndex: 'totalPrice',
-        key: 'totalPrice',
-        render: (price) => `${price} VND`, // Assuming price is in VND
-    },
-];
-
-const TableAdminProduct = ({ data }) => {
-    console.log(data);
-
-    return <Table columns={columns} dataSource={data} rowKey="_id" />;
+    return (
+        <div>
+            <Table columns={columns} dataSource={selectedProduct} rowKey="_id" pagination={false} />
+            <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold' }}>
+                Tổng tiền: {formatVND(totalPrice)}
+            </div>
+        </div>
+    );
 };
 
 export default TableAdminProduct;
