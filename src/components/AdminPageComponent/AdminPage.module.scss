@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.menu {
+    width: 256px;
+}
+
+.content {
+    width: calc(100% - 256px);
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .menu {
+        width: 100%;
+    }
+
+    .content {
+        width: 100%;
+    }
+}
+@media (max-width: 1024px) and (orientation: landscape){
+    .container {
+        flex-direction: column;
+    }
+
+    .menu {
+        width: 100%;
+    }
+
+    .content {
+        width: 100%;
+    }
+}
