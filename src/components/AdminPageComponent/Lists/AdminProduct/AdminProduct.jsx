@@ -11,6 +11,9 @@ import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
 function AdminProduct() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    //
+
+
 
     useEffect(() => {
         const fetchProductAll = async () => {
@@ -110,6 +113,9 @@ function AdminProduct() {
             </div>
         </div>
     );
+
+    
+    
 }
 
 export default AdminProduct;

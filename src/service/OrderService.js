@@ -37,8 +37,9 @@ export const getOrderPaid = async () => {
 };
 
 export const deleteOrder = async (id) => {
+   console.log(id);
     try {
-        const res = await axiosInstance.delete(`/order/deleteOrder/${id}`);
+        const res = await axiosInstance.delete(`good/${id}`);
         return res.data;
     } catch (error) {
         console.error('Error deleting order:', error.response || error.message || error);
