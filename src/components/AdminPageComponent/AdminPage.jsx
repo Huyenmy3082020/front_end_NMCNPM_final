@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import {
-    AppstoreOutlined,
     BankOutlined,
     DashboardFilled,
-    DashboardTwoTone,
     LogoutOutlined,
-    MailOutlined,
     OrderedListOutlined,
     ProductOutlined,
-    ProfileOutlined,
-    SettingOutlined,
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -18,6 +13,8 @@ import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
 
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
 import AdminOrder from './Lists/AdminOrder/AdminOrder';
+import AdminInvoidIn from './Lists/AdminInvoidIn/AdminInvoidIn';
+
 const items = [
     {
         key: 'dashboard',
@@ -40,6 +37,23 @@ const items = [
         icon: <OrderedListOutlined></OrderedListOutlined>,
     },
     {
+        key: 'invoice',
+        label: 'invoice',
+        icon: <OrderedListOutlined></OrderedListOutlined>,
+        children: [
+            {
+                key: 'invoid-in',
+                label: 'invoid-in',
+                icon: <OrderedListOutlined></OrderedListOutlined>,
+            },
+            {
+                key: 'invoid-out',
+                label: 'invoid-out',
+                icon: <OrderedListOutlined></OrderedListOutlined>,
+            },
+        ],
+    },
+    {
         key: 'balance',
         label: 'Balance',
         icon: <BankOutlined></BankOutlined>,
@@ -58,6 +72,10 @@ const renderPage = (key) => {
         case 'product':
             return <AdminProduct></AdminProduct>;
         case 'order':
+            return <AdminOrder></AdminOrder>;
+        case 'invoid-in':
+            return <AdminInvoidIn></AdminInvoidIn>;
+        case 'invoid-out':
             return <AdminOrder></AdminOrder>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;

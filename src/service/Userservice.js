@@ -28,6 +28,7 @@ export const getDetailUser = async (id, access_token) => {
         throw new Error('Failed to fetch user details');
     }
 };
+
 export const refreshToken = async () => {
     try {
         const res = await axios.post(
@@ -66,3 +67,5 @@ export const getAllUser = async () => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}user/getAll`);
     return res.data;
 };
+
+
