@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import * as Productservice from '../../service/Productservice';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteProduct } from '../../redux/slides/ProductSlide';
 
 const TableComponent = ({ data, isActionEdit }) => {
     const [selectionType, setSelectionType] = useState('checkbox');
@@ -73,12 +75,14 @@ const TableComponent = ({ data, isActionEdit }) => {
         // setCurrentProduct(product);
         // setIsModalOpen(true);
     };
+    const dispatch = useDispatch();
 
     const handleDelete = async (id) => {
         try {
             console.log('Delete product:', id);
 
             const res = await Productservice.deleteProduct(id);
+            dispatch(deleteProduct(id));
             console.log(res);
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -96,6 +100,8 @@ const TableComponent = ({ data, isActionEdit }) => {
         setSelectedRowKeys(selectedKeys);
     };
 
+    const product = useSelector((state) => state.product.products);
+    console.log('Product:', product);
     return (
         <div>
             <Radio.Group
@@ -115,7 +121,7 @@ const TableComponent = ({ data, isActionEdit }) => {
                     onChange: handleSelectChange,
                 }}
                 columns={columns()}
-                dataSource={data}
+                dataSource={product}
                 rowKey="_id"
             />
             <Button type="primary">Xoa tat</Button>

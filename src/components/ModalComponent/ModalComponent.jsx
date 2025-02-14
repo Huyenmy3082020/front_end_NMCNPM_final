@@ -1,18 +1,22 @@
 import React from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
 import * as ProductService from '../../service/Productservice';
+import { useDispatch } from 'react-redux';
+import { addProduct, upsertProduct } from '../../redux/slides/ProductSlide';
 
 const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, categories, suppliers, onSuccess }) => {
     const [form] = Form.useForm();
 
+    const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         console.log('Received values of form: ', values);
         onFinish(values);
         form.resetFields();
         try {
             const res = await ProductService.createProduct(values);
-            console.log(res);
+            console.log('Product created', res.ingredient);
             onSuccess(res.ingredient);
+            dispatch(addProduct(res.ingredient));
         } catch (err) {
             console.log(err);
         }

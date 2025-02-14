@@ -14,6 +14,7 @@ function AdminOrder() {
     const state = useSelector((state) => state);
     console.log('Redux State:', state);
 
+    console.log(selectedProduct);
     useEffect(() => {
         if (isActionImport) {
             setSelectedProduct([]);

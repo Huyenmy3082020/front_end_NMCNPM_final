@@ -1,19 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    search: '',
+    products: [],
 };
 
-export const productSlide = createSlice({
+export const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-        searchProduct: (state, action) => {
-            state.search = action.payload;
+        addProduct: (state, action) => {
+            console.log(action.payload);
+
+            state.products.push(action.payload);
+        },
+        upsertProduct: (state, action) => {
+            console.log(action.payload);
+            const index = state.products.findIndex((p) => p.id === action.payload.id);
+            if (index !== -1) {
+                state.products[index] = action.payload;
+            } else {
+                state.products.push(action.payload);
+            }
+        },
+        deleteProduct: (state, action) => {
+            state.products = state.products.filter((p) => p._id !== action.payload);
+        },
+        // deleteteAll
+        deleteAllProducts: (state) => {
+            state.products = [];
         },
     },
 });
 
-export const { searchProduct } = productSlide.actions;
+export const { addProduct, upsertProduct, deleteProduct, deleteAllProducts } = productSlice.actions;
 
-export default productSlide.reducer;
+export default productSlice.reducer;

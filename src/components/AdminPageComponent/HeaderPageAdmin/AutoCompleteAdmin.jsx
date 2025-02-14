@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AutoComplete } from 'antd';
 import * as IngredientService from '../../../service/Productservice';
+import { useDispatch } from 'react-redux';
+import { addOrder } from '../../../redux/slides/OrderSlide';
 
 const AutoCompleteAdmin = ({ onSelectProduct }) => {
     const [products, setProducts] = useState([]);
@@ -32,10 +34,25 @@ const AutoCompleteAdmin = ({ onSelectProduct }) => {
         setSearchValue(value);
     };
 
+    const dispatch = useDispatch();
     const handleSelect = (value, option) => {
+        console.log('Product được chọn:', option.product); // Kiểm tra dữ liệu
+
         if (onSelectProduct) {
             onSelectProduct(option.product);
             setSearchValue('');
+
+            dispatch(
+                addOrder({
+                    orderItems: [option.product], // Chắc chắn đây là mảng
+                    totalPrice: option.product.price || 0,
+                }),
+            );
+
+            console.log('Redux action đã dispatch:', {
+                orderItems: [option.product],
+                totalPrice: option.product.price || 0,
+            });
         }
     };
 

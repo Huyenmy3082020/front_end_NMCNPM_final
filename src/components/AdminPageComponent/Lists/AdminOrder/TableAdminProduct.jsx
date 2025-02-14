@@ -7,7 +7,6 @@ import { formatVND } from '../../../../ultil/index';
 import * as ProductService from '../../../../service/Productservice';
 const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     const dispatch = useDispatch();
-    const order = useSelector((state) => state.order.items);
     const [totalPrice, setTotalPrice] = useState(0);
 
     const handleDelete = async (id) => {
@@ -19,6 +18,10 @@ const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
         }
     };
 
+    const order = useSelector((state) => state.order); // Lấy toàn bộ order
+    const orderItems = useSelector((state) => state.order.orderItems); // Lấy danh sách sản phẩm trong order
+
+    console.log('Order data:', order);
     const columns = [
         {
             title: 'Tên sản phẩm',
@@ -75,7 +78,7 @@ const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     }, [selectedProduct]);
     return (
         <div>
-            <Table columns={columns} dataSource={selectedProduct} rowKey="_id" pagination={false} />
+            <Table columns={columns} dataSource={orderItems} rowKey="_id" pagination={false} />
             <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold' }}>
                 Tổng tiền: {formatVND(totalPrice)}
             </div>

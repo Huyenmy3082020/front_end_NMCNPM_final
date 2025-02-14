@@ -1,68 +1,57 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 const initialState = {
-    orderItems: [], // Mảng các sản phẩm trong đơn hàng
-    shippingAddress: {}, // Địa chỉ giao hàng
-    paymentMethod: '', // Phương thức thanh toán
-    itemsPrice: 0, // Giá trị tổng của các sản phẩm
-    shippingPrice: 0, // Giá trị phí giao hàng
-    taxPrice: 0, // Giá trị thuế
-    totalPrice: 0, // Giá trị tổng của đơn hàng
-    user: null, // Thông tin người dùng, khởi tạo là null
-    isPaid: false, // Trạng thái đã thanh toán
-    paidAt: null, // Thời điểm thanh toán
-    isDelivered: false, // Trạng thái đã giao hàng
-    deliveredAt: null, // Thời điểm giao hàng
+    orderItems: [],
+    totalPrice: 0,
+    orderId: null,
 };
 
-export const OrderSlide = createSlice({
+export const OrderSlice = createSlice({
     name: 'order',
     initialState,
     reducers: {
-        addItem: (state, action) => {
-            const newOrder = action.payload; // result.data từ API
-            state.items = [...state.items, ...newOrder.items]; // Gộp các sản phẩm vào giỏ hàng
-            state.totalPrice = newOrder.totalPrice || 0; // Tổng giá trị nếu có trả về từ API
-            state.orderId = newOrder.orderId || null; // Lưu Order ID nếu có
+        addOrder: (state, action) => {
+            const { orderItems, totalPrice } = action.payload;
+        
+            if (!Array.isArray(orderItems)) {
+                console.error("Lỗi: orderItems không phải là mảng!", orderItems);
+                return;
+            }
+        
+            state.orderItems = [...state.orderItems, ...orderItems]; // Giữ lại đơn hàng cũ
+            state.totalPrice += totalPrice; // Cộng dồn tổng tiền
         },
-
+        
         removeOrder: (state, action) => {
-            const { productId } = action.payload;
-            state.orderItems = state.orderItems.filter((item) => item.productId !== productId);
+            state.orderItems = state.orderItems.filter((item) => item.productId !== action.payload);
         },
 
         removeAllOrder: (state, action) => {
-            const { listChecked } = action.payload;
-            state.orderItems = state.orderItems.filter((item) => !listChecked.includes(item.product));
+            state.orderItems = state.orderItems.filter((item) => !action.payload.includes(item.productId));
         },
 
         increaseOrder: (state, action) => {
-            const { productId } = action.payload;
-
-            const itemOrder = state.orderItems.find((item) => item.product === productId);
-
+            const itemOrder = state.orderItems.find((item) => item.productId === action.payload);
             if (itemOrder) {
                 itemOrder.amount += 1;
             }
         },
 
         decreaseOrder: (state, action) => {
-            const { productId } = action.payload;
-            const itemOrder = state.orderItems.find((item) => item.product === productId);
+            const itemOrder = state.orderItems.find((item) => item.productId === action.payload);
             if (itemOrder) {
                 itemOrder.amount -= 1;
                 if (itemOrder.amount <= 0) {
-                    state.orderItems = state.orderItems.filter((item) => item.product !== productId);
+                    state.orderItems = state.orderItems.filter((item) => item.productId !== action.payload);
                 }
             }
         },
-        removeAllOrderLogOut: (state, action) => {
-            return initialState;
-        },
+
+        removeAllOrderLogOut: () => initialState,
     },
 });
 
-// Tạo action creators cho từng reducer
 export const { addOrder, increaseOrder, decreaseOrder, removeOrder, removeAllOrder, removeAllOrderLogOut } =
-    OrderSlide.actions;
+    OrderSlice.actions;
 
-export default OrderSlide.reducer;
+export default OrderSlice.reducer;
