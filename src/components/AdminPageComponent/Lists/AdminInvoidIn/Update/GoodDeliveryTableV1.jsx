@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { Table, InputNumber, message, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { setOrder } from '../../../../../redux/slides/OrderSlide';
-import { decodeDisplayId, formatVND } from '../../../../../ultil/index';
-import * as OrderService from '../../../../../service/OrderService';
+import { Table, InputNumber } from 'antd';
 
 const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
-    const dispatch = useDispatch();
-    const [totalPrice, setTotalPrice] = useState(0);
-
-    const dataSource = selectedDelivery.items?.map((item) => ({
-        _id: item.ingredientsId._id,
-        name: item.ingredientsId.name,
-        price: item.ingredientsId.price,
-        quantity: item.quantity
-    }));
-    console.log(selectedDelivery);
+    const [quantities, setQuantities] = useState({});
 
     useEffect(() => {
-        if (dataSource?.length) {
-            let total = dataSource.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            setTotalPrice(total);
-        } else {
-            setTotalPrice(0);
+        if (selectedDelivery?.items) {
+            const initialQuantities = {};
+            selectedDelivery.items.forEach((item) => {
+                initialQuantities[item._id] = item.quantity;
+            });
+            setQuantities(initialQuantities);
         }
-    }, [selectedDelivery]);
+    }, [selectedDelivery]); // Cập nhật khi selectedDelivery thay đổi
 
+    console.log(quantities);
+    const onUpdateQuantity = (id, value) => {
+        setQuantities((prev) => ({
+            ...prev,
+            [id]: value, // Cập nhật số lượng cho từng sản phẩm theo `_id`
+        }));
+    };
 
-  
-    console.log(  decodeDisplayId(selectedDelivery._id));
-    const onUpdateQuantity = (id,value)=>
-    {
+    const dataSource = selectedDelivery?.items?.map((item) => ({
+        _id: item._id,
+        name: item.ingredientName,
+        price: item.price,
+        quantity: quantities[item._id] || item.quantity, // Lấy từ state
+    }));
 
-        // update san pham trong chi tiet nhap hang
-        console.log(id,value)
-    }
+    const totalPrice = dataSource.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
     const columns = [
         {
             title: 'Tên sản phẩm',
@@ -45,7 +41,8 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
             title: 'Giá',
             dataIndex: 'price',
             key: 'price',
-            render: (price) => <strong>{formatVND(price)}</strong>,
+            render: (price) =>
+                price ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price) : 'N/A',
         },
         {
             title: 'Số lượng',
@@ -54,7 +51,7 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
             render: (_, record) => (
                 <InputNumber
                     min={1}
-                    value={record.quantity}
+                    value={quantities[record._id] || record.quantity}
                     onChange={(value) => onUpdateQuantity(record._id, value)}
                     style={{ width: '80px' }}
                 />
@@ -63,35 +60,41 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
         {
             title: 'Tổng tiền',
             key: 'total',
-            render: (_, record) => <strong>{formatVND(record.price * record.quantity)}</strong>,
+            render: (_, record) => {
+                const total = record.price * record.quantity;
+                return (
+                    <strong>
+                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total)}
+                    </strong>
+                );
+            },
         },
     ];
 
     return (
         <div>
             <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false} />
-            <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold' }}>
-                Tổng tiền: {formatVND(totalPrice)}
-                
+            <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold', color: 'red' }}>
+                Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
             </div>
-            <button
-  style={{
-    padding: '8px 16px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: 'white',
-    backgroundColor: '#1890ff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  }}
-  onMouseOver={(e) => (e.target.style.backgroundColor = '#40a9ff')}
-  onMouseOut={(e) => (e.target.style.backgroundColor = '#1890ff')}
->
-  Cập nhật đơn hàng
-</button>
 
+            <button
+                style={{
+                    padding: '8px 16px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    color: 'white',
+                    backgroundColor: '#1890ff',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s',
+                }}
+                onMouseOver={(e) => (e.target.style.backgroundColor = '#40a9ff')}
+                onMouseOut={(e) => (e.target.style.backgroundColor = '#1890ff')}
+            >
+                Cập nhật đơn hàng
+            </button>
         </div>
     );
 };

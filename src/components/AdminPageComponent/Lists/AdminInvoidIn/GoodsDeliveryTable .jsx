@@ -20,7 +20,12 @@ const GoodsDeliveryTable = () => {
                     userEmail: delivery.userId?.email,
                     userPhone: delivery.userId?.phone,
                     deliveryDate: delivery.deliveryDate,
-                    items: delivery.items || [],
+                    items: delivery.items.map((item) => ({
+                        _id: item._id,
+                        ingredientName: item.ingredientsId?.name,
+                        price: item.ingredientsId?.price,
+                        quantity: item.quantity,
+                    })),
                 }));
 
                 setData(enrichedData);
@@ -34,12 +39,15 @@ const GoodsDeliveryTable = () => {
         fetchData();
     }, []);
 
+    console.log(data);
+
     // Hàm mở modal khi bấm View
     const handleView = (record) => {
         console.log(record);
         setSelectedDelivery(record);
         setIsModalVisible(true);
     };
+    console.log(selectedDelivery);
 
     const columns = [
         { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id' },
@@ -75,9 +83,7 @@ const GoodsDeliveryTable = () => {
                 width={1000}
             >
                 {selectedDelivery && <GoodsDeliveryTableV1 selectedDelivery={selectedDelivery} />}
-            
             </Modal>
-
         </>
     );
 };
