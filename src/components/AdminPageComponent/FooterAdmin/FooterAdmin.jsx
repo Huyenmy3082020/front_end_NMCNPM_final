@@ -15,9 +15,6 @@ function FooterAdmin({ selectedProduct, isActionImport, setIsActionImport, deliv
 
     return (
         <div className={styles.wrapperList}>
-            <div className={styles.footerLeft}>
-                <p className={styles.totalPrice}>💰 Tổng tiền {formatVND(calculatedTotalPrice)} </p>
-            </div>
             <div className={styles.footerRight}>
                 <DropdownPage
                     selectedProduct={selectedProduct}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import * as Productservice from '../../service/Productservice';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct } from '../../redux/slides/ProductSlide';
@@ -15,64 +15,85 @@ const TableComponent = ({ data, isActionEdit }) => {
 
     const [form] = Form.useForm();
 
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    placeholder={`Tìm kiếm...`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    type="primary"
+                    onClick={() => confirm()}
+                    icon={<SearchOutlined />}
+                    size="small"
+                    style={{ width: 90, marginRight: 8 }}
+                >
+                    Tìm
+                </Button>
+                <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
+                    Xóa
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        onFilter: (value, record) => record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+    });
+
     const columns = () => [
         {
-            title: 'Name',
+            title: 'Tên sản phẩm',
             dataIndex: 'name',
             key: 'name',
             sorter: (a, b) => a.name.length - b.name.length,
+            ...getColumnSearchProps('name'),
         },
         {
-            title: 'description',
+            title: 'Mô tả',
             dataIndex: 'description',
             key: 'description',
-            sorter: (a, b) => a.description.length - b.description.length,
         },
         {
-            title: 'Price',
+            title: 'Giá',
             dataIndex: 'price',
             key: 'price',
+            sorter: (a, b) => a.price - b.price,
         },
         {
-            title: 'categoryId',
+            title: 'Danh mục',
             dataIndex: 'categoryId',
-            key: 'categoryId',
-            render: (categoryId) => categoryId?.name,
+            key: 'category',
+            render: (categoryId) => categoryId?.name || 'N/A',
         },
         {
-            title: 'Actions',
+            title: 'Trạng thái tồn kho',
+            dataIndex: 'inventory',
+            key: 'inventoryStatus',
+            render: (inventory) => inventory?.statusList?.join(', ') || 'Không có dữ liệu',
+        },
+        {
+            title: 'Số lượng tồn kho',
+            dataIndex: 'inventory',
+            key: 'inventoryStock',
+            render: (inventory) => inventory?.totalStock ?? 'Không có dữ liệu',
+        },
+        {
+            title: 'Thao tác',
             key: 'actions',
-            // render: (_, record) => (
-            //     <div>
-            //         <Button icon={<EditOutlined />} onClick={() => handleEdit(record._id)} style={{ marginRight: 8 }}>
-            //             Edit
-            //         </Button>
-            //         <Popconfirm
-            //             title="Are you sure you want to delete this item?"
-            //             onConfirm={() => handleDelete(record._id)}
-            //         >
-            //             <Button icon={<DeleteOutlined />} type="danger">
-            //                 Delete
-            //             </Button>
-            //         </Popconfirm>
-            //     </div>
-            // ),
-
             render: (_, record) => (
                 <div>
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)} // Truyền record vào handleEdit
-                        style={{ marginRight: 8 }}
-                    >
-                        Edit
+                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} style={{ marginRight: 8 }}>
+                        Sửa
                     </Button>
                     <Popconfirm
-                        title="Are you sure you want to delete this item?"
+                        title="Bạn có chắc chắn muốn xóa sản phẩm này?"
                         onConfirm={() => handleDelete(record._id)}
                     >
                         <Button icon={<DeleteOutlined />} type="danger">
-                            Delete
+                            Xóa
                         </Button>
                     </Popconfirm>
                 </div>

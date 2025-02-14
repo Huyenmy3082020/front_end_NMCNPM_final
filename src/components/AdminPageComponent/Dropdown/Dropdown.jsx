@@ -74,7 +74,9 @@ const DropdownPage = ({
         <Space direction="vertical">
             <Space wrap>
                 <Dropdown menu={{ items }} placement="topRight">
-                    <Button>Lưu</Button>
+                    <div>
+                        <Button>Lưu</Button>
+                    </div>
                 </Dropdown>
             </Space>
         </Space>

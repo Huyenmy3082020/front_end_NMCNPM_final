@@ -57,7 +57,13 @@ function AdminOrder() {
                             type="text"
                             value={deliveryAddress}
                             onChange={(e) => setDeliveryAddress(e.target.value)}
-                            placeholder="Nhập địa chỉ"
+                            placeholder="Nhập địa chỉ nhập hàng"
+                            style={{
+                                width: '40%',
+                                fontSize: '12px',
+                                borderRadius: '8px',
+                                border: '1px solid #ccc',
+                            }}
                         />
 
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />

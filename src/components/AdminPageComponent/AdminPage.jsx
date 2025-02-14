@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import {
     BankOutlined,
+    CloudDownloadOutlined,
+    CloudUploadOutlined,
     DashboardFilled,
+    DashboardOutlined,
     LogoutOutlined,
     OrderedListOutlined,
     ProductOutlined,
+    ShopOutlined,
+    SwapOutlined,
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -24,7 +29,7 @@ const items = [
     {
         key: 'dashboard',
         label: 'Dashboard',
-        icon: <IconDashboard></IconDashboard>,
+        icon: <DashboardOutlined />,
     },
     {
         key: 'user',
@@ -38,35 +43,25 @@ const items = [
     },
     {
         key: 'order',
-        label: 'Order',
-        icon: <OrderedListOutlined></OrderedListOutlined>,
+        label: 'Warehousing and Exporting',
+        icon: <SwapOutlined />,
     },
     {
         key: 'invoice',
-        label: 'invoice',
-        icon: <OrderedListOutlined></OrderedListOutlined>,
+        label: 'Invoice',
+        icon: <ShopOutlined />,
         children: [
             {
                 key: 'invoid-in',
-                label: 'invoid-in',
-                icon: <OrderedListOutlined></OrderedListOutlined>,
+                label: 'Invoid-in',
+                icon: <CloudDownloadOutlined />,
             },
             {
                 key: 'invoid-out',
-                label: 'invoid-out',
-                icon: <OrderedListOutlined></OrderedListOutlined>,
+                label: 'Invoid-out',
+                icon: <CloudUploadOutlined />,
             },
         ],
-    },
-    {
-        key: 'balance',
-        label: 'Balance',
-        icon: <BankOutlined></BankOutlined>,
-    },
-    {
-        key: 'balance',
-        label: 'Balance',
-        icon: <BankOutlined></BankOutlined>,
     },
 ];
 

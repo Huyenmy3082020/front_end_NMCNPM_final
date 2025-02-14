@@ -2,14 +2,15 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border: 1px solid #ddd;
 }
 .wrapperList {
     display: flex;
     align-items: center;
 }
 .wrapperItem {
-    padding: 16px;
+    padding: 8px;
+    font-size: 24px;
+    cursor: pointer;
 }
 .wrapperListInput {
     width: 100%;
@@ -19,7 +20,10 @@
     border-radius: 5px;
     height: 52px;
 }
-
+.searchSection {
+    display: flex;
+    align-items: center;
+}
 //viết thêm
 .wrapper {
     display: flex;
@@ -35,7 +39,6 @@
 
 .searchSection {
     width: 100%;
-    margin-bottom: 10px;
 
     @media (max-width: 768px) {
         margin-bottom: 5px;
