@@ -80,7 +80,7 @@ const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     }, [selectedProduct]);
     return (
         <div>
-            <Table columns={columns} dataSource={orderItems} rowKey="_id" pagination={false} />
+            <Table columns={columns} dataSource={selectedProduct} rowKey="_id" pagination={false} />
             <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold' }}>
                 Tổng tiền: {formatVND(totalPrice)}
             </div>
