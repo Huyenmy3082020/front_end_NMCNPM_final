@@ -19,10 +19,21 @@ export const deleteProduct = async (id) => {
     return res.data;
 };
 
+// export const updateProduct = async (id, data) => {
+//     const res = await axiosInstance.put(`product/updateProduct/${id}`, data);
+//     return res.data;
+// };
+
 export const updateProduct = async (id, data) => {
-    const res = await axiosInstance.put(`product/updateProduct/${id}`, data);
-    return res.data;
+    try {
+        const res = await axiosInstance.put(`ingredient/${id}`, data);
+        return res.data;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw error;
+    }
 };
+
 
 export const getAllIngredient = async () => {
     try {

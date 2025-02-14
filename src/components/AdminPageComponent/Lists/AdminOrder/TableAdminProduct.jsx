@@ -4,17 +4,19 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../../../redux/slides/OrderSlide';
 import { formatVND } from '../../../../ultil/index';
-import * as ProductService from '../../../../service/Productservice';
+
+import * as OrderService from '../../../../service/OrderService';
+
 const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     const dispatch = useDispatch();
     const [totalPrice, setTotalPrice] = useState(0);
 
     const handleDelete = async (id) => {
         try {
-            await ProductService.deleteProduct(id);
+            await OrderService.deleteOrder(id);
             message.success('Xóa sản phẩm thành công!');
         } catch (error) {
-            message.error('Xóa sản phẩm thất bại!');
+            message.error('Xóa sản phẩm thất bạii!');
         }
     };
 
