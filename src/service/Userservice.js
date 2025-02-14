@@ -21,7 +21,6 @@ export const getDetailUser = async (id, access_token) => {
                 Authorization: `Bearer ${access_token}`,
             },
         });
-        console.log(res);
         return res.data;
     } catch (error) {
         console.error('Error fetching user details:', error.response || error.message || error);

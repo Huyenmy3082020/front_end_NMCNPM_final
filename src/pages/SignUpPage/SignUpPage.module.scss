@@ -98,12 +98,51 @@
     margin-top: 8px;
 }
 
+
 wrapperItem1 {
     flex: 1;
 }
 wrapperItem {
     flex: 1;
 }
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+/* Responsive Styles */
+@media (max-width: 768px) {
+
+    .wrapperList {
+        flex-direction: column;
+        box-shadow: none;
+    }
+
+    .wrapperItem1 {
+        width: 100%;
+        //flex: none;
+    }
+
+    .wrapperItem {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+
+    .wrapperItem1 .formItem img {
+        width: 150px;
+        height: auto;
+    }
+
+    .wrapperItem1 h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .wrapperItem1 .notiRegis {
+        font-size: 14px;
+        text-align: center;
+        display: block;
+        margin: 10px 0;
+    }
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     /* Responsive Styles */
@@ -144,6 +183,35 @@ wrapperItem {
         .wrapperInfo {
             margin-bottom: 15px;
         }
+
+    .wrapperInfoInput {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+
+    .wrapperButton,
+    .wrapperButtonGoogle {
+
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .wrapperItem1 h3 {
+        font-size: 16px;
+        text-align: center;
+    }
+
+  
+    .wrapperItem1 h3 a {
+        color: #2D65C3;
+        text-decoration: none;
+    }
+  }
+}
 
         .wrapperInfoInput {
             width: 100%;

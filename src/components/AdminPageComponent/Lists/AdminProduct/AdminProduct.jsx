@@ -11,6 +11,9 @@ import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
 function AdminProduct() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    //
+
+
 
     useEffect(() => {
         const fetchProductAll = async () => {
@@ -90,7 +93,7 @@ function AdminProduct() {
                         borderStyle: 'dashed',
                         marginLeft: '32px',
                     }}
-                    onClick={showModal} // Khi nhấn nút, modal sẽ mở
+                    onClick={showModal}
                 >
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
@@ -110,6 +113,9 @@ function AdminProduct() {
             </div>
         </div>
     );
+
+    
+    
 }
 
 export default AdminProduct;

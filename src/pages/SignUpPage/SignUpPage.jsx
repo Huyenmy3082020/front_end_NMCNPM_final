@@ -8,14 +8,16 @@ import slider5 from '../../assets/slider/slider5.png';
 import SliderComponent from '../../components/SliderComponent/SliderComponent';
 import { useState } from 'react';
 import { validateForm } from '../../Validate/validate';
-
+import { Button, Dropdown, Space, message } from 'antd';
 import * as UserService from '../../service/Userservice';
+import { useNavigate } from 'react-router-dom';
 function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [errorsserver, setErrorsserver] = useState(false);
+    const navigate = useNavigate();
     const handleSubmit = async () => {
         const validationErrors = validateForm(email, password, confirmPassword);
 
@@ -27,12 +29,11 @@ function SignUpPage() {
         setErrors({});
 
         try {
-            const register = await UserService.signUpUser({ email, password, confirmPassword });
-            console.log('Đăng ký thành công:', register);
+            await UserService.signUpUser({ email, password, confirmPassword });
+            message.success('Đăng kí thành công');
+            navigate('/sign-in');
         } catch (error) {
-            if (error.response) {
-                setErrorsserver(true);
-            }
+            message.error(error.response.data.message);
         }
     };
     if (errorsserver === true) {

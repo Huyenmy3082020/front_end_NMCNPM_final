@@ -19,3 +19,35 @@
     border-radius: 5px;
     height: 52px;
 }
+
+//viết thêm
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+
+    @media (max-width: 768px) {
+        flex-direction: column; // Xếp các phần theo chiều dọc trên mobile
+        align-items: flex-start; // Canh trái cho gọn hơn
+    }
+}
+
+.searchSection {
+    width: 100%;
+    margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+        margin-bottom: 5px;
+    }
+}
+
+.iconSection {
+    display: flex;
+    gap: 10px;
+
+    @media (max-width: 768px) {
+        flex-wrap: wrap; // Cho phép icon xuống dòng khi không đủ chỗ
+        gap: 5px;
+    }
+}

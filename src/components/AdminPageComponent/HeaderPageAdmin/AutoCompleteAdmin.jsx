@@ -7,8 +7,6 @@ const AutoCompleteAdmin = ({ onSelectProduct }) => {
     const [options, setOptions] = useState([]);
     const [searchValue, setSearchValue] = useState('');
 
-    console.log('products', products);
-    console.log('options', options);
     useEffect(() => {
         const fetchIngredient = async () => {
             try {

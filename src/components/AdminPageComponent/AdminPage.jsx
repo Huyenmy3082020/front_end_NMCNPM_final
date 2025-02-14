@@ -10,16 +10,21 @@ import {
 import { Menu } from 'antd';
 import AdminProduct from '../AdminPageComponent/Lists/AdminProduct/AdminProduct';
 import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
-
+import styles from './AdminPage.module.scss';
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
 import AdminOrder from './Lists/AdminOrder/AdminOrder';
+
 import AdminInvoidIn from './Lists/AdminInvoidIn/AdminInvoidIn';
 
+import { useDispatch, useSelector } from 'react-redux';
+import UserService from '../../../src/service/Userservice';
+import { logout } from '../../redux/slides/UserSlideV1';
+import { IconDashboard } from '../IconComponent/IconComponent';
 const items = [
     {
         key: 'dashboard',
         label: 'Dashboard',
-        icon: <DashboardFilled />,
+        icon: <IconDashboard></IconDashboard>,
     },
     {
         key: 'user',
@@ -58,13 +63,13 @@ const items = [
         label: 'Balance',
         icon: <BankOutlined></BankOutlined>,
     },
-
     {
-        key: 'logout',
-        label: 'Log out',
-        icon: <LogoutOutlined></LogoutOutlined>,
+        key: 'balance',
+        label: 'Balance',
+        icon: <BankOutlined></BankOutlined>,
     },
 ];
+
 const renderPage = (key) => {
     switch (key) {
         case 'user':
@@ -79,7 +84,6 @@ const renderPage = (key) => {
             return <AdminOrder></AdminOrder>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
-
         default: {
             return <></>;
         }
@@ -94,9 +98,10 @@ const App = () => {
 
     return (
         <>
-            <div style={{ display: 'flex' }}>
+            <div className={styles.container}>
                 <Menu
                     onClick={onClick}
+                    className={styles.menu}
                     style={{
                         width: 256,
                     }}
@@ -105,7 +110,7 @@ const App = () => {
                     mode="inline"
                     items={items}
                 />
-                <div style={{ width: '1260px' }}>{renderPage(selectedKey)}</div>
+                <div className={styles.content}>{renderPage(selectedKey)}</div>
             </div>
         </>
     );
