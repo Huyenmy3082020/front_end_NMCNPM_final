@@ -167,7 +167,7 @@ const TableComponent = ({ data, isActionEdit }) => {
                     onChange: handleSelectChange,
                 }}
                 columns={columns()}
-                dataSource={product}
+                dataSource={data}
                 rowKey="_id"
             />
             <Button type="primary">Xoa tat</Button>

@@ -47,7 +47,7 @@
     gap: 10px;
 
     @media (max-width: 768px) {
-        flex-wrap: wrap; // Cho phép icon xuống dòng khi không đủ chỗ
+        flex-wrap: wrap;
         gap: 5px;
     }
 }

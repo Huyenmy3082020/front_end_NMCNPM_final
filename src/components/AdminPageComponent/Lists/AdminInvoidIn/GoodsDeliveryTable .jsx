@@ -1,52 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Button, Modal, Table } from 'antd';
 import { fetchGoodsDeliveries } from '../../../../service/GoodsDeliveryService';
-import { getAllIngredient } from '../../../../service/Productservice';
-// import { getDetailUser } from '../../../../service/Userservice';
+import { generateDisplayId } from '../../../../ultil';
+import { FolderViewOutlined } from '@ant-design/icons';
+import GoodsDeliveryTableV1 from './Update/GoodDeliveryTableV1';
 
 const GoodsDeliveryTable = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedDelivery, setSelectedDelivery] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const goodsDeliveries = await fetchGoodsDeliveries();
-
-                const enrichedData = await Promise.all(
-                    goodsDeliveries.data.map(async (delivery) => {
-                        // const token =
-                        //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWUxNGJkNjljZTkyOGYzOWM1MmUxOSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczOTQ2MjE3NiwiZXhwIjoxNzQwMzI2MTc2fQ.AVeZN9btNeFfrxzzy5W5oRCLG37ysJ5vDm8nQsjvP5o';
-                        // const user = await getDetailUser(delivery.userId, token);
-
-                        const itemsWithDetails = await Promise.all(
-                            delivery.items.map(async (item) => {
-                                const ingredientRes = await getAllIngredient(item.ingredientsId);
-                                const ingredientArray = ingredientRes.data?.ingredients || [];
-                                const ingredient = ingredientArray.find((ing) => ing._id === item.ingredientsId) || {};
-
-                                // Ensure that ingredient has the necessary properties
-                                return {
-                                    name: ingredient.name || 'Unknown',
-                                    price: ingredient.price || 0,
-                                };
-                            }),
-                        );
-
-                        return {
-                            _id: delivery._id,
-                            userEmail: '',
-                            userPhone: '',
-                            deliveryDate: delivery.deliveryDate,
-                            items: itemsWithDetails,
-                        };
-                    }),
-                );
+                const goods = await fetchGoodsDeliveries();
+                const enrichedData = goods.map((delivery) => ({
+                    _id: generateDisplayId(delivery._id),
+                    userEmail: delivery.userId?.email,
+                    userPhone: delivery.userId?.phone,
+                    deliveryDate: delivery.deliveryDate,
+                    items: delivery.items || [],
+                }));
 
                 setData(enrichedData);
-                setLoading(false);
             } catch (error) {
                 console.error('Error fetching goods deliveries:', error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -54,22 +34,16 @@ const GoodsDeliveryTable = () => {
         fetchData();
     }, []);
 
+    // Hàm mở modal khi bấm View
+    const handleView = (record) => {
+        setSelectedDelivery(record);
+        setIsModalVisible(true);
+    };
+
     const columns = [
-        {
-            title: 'Phiếu Nhập',
-            dataIndex: '_id',
-            key: '_id',
-        },
-        {
-            title: 'User Email',
-            dataIndex: 'userEmail',
-            key: 'userEmail',
-        },
-        {
-            title: 'User Phone',
-            dataIndex: 'userPhone',
-            key: 'userPhone',
-        },
+        { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id' },
+        { title: 'User Email', dataIndex: 'userEmail', key: 'userEmail' },
+        { title: 'User Phone', dataIndex: 'userPhone', key: 'userPhone' },
         {
             title: 'Ngày nhập hàng',
             dataIndex: 'deliveryDate',
@@ -77,22 +51,32 @@ const GoodsDeliveryTable = () => {
             render: (text) => new Date(text).toLocaleString(),
         },
         {
-            title: 'Sản phẩm',
-            dataIndex: 'items',
-            key: 'items',
-            render: (items) => (
-                <ul>
-                    {items.map((item, index) => (
-                        <li key={index}>
-                            <strong>{item.name}</strong> - {item.price}$
-                        </li>
-                    ))}
-                </ul>
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+                <Button icon={<FolderViewOutlined />} onClick={() => handleView(record)} style={{ marginRight: 8 }}>
+                    View
+                </Button>
             ),
         },
     ];
 
-    return <Table columns={columns} dataSource={data} loading={loading} rowKey="_id" />;
+    return (
+        <>
+            <Table columns={columns} dataSource={data} loading={loading} rowKey="_id" />
+
+            {/* Modal hiển thị GoodTableDeliveryTable */}
+            <Modal
+                title="Chi tiết Phiếu Nhập"
+                open={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                footer={null}
+                width={800} // Điều chỉnh độ rộng modal
+            >
+                {selectedDelivery && <GoodsDeliveryTableV1 delivery={selectedDelivery} />}
+            </Modal>
+        </>
+    );
 };
 
 export default GoodsDeliveryTable;

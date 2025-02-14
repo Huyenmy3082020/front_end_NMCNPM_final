@@ -5,7 +5,6 @@ import AutoCompleteAdmin from '../../HeaderPageAdmin/AutoCompleteAdmin.jsx';
 import GoodsDeliveryTable from './GoodsDeliveryTable .jsx';
 import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
 
-
 function AdminInvoidIn() {
     const [selectedProduct, setSelectedProduct] = useState([]);
     const dispatch = useDispatch();
@@ -48,14 +47,9 @@ function AdminInvoidIn() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
                     </div>
-                    <GoodsDeliveryTable selectedProduct={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
+                    <GoodsDeliveryTable />
                 </div>
             </div>
-            <FooterAdmin
-                selectedProduct={selectedProduct}
-                isActionImport={isActionImport}
-                setIsActionImport={setIsActionImport}
-            />
         </div>
     );
 }

@@ -14,6 +14,8 @@ const DropdownPage = ({
 }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 
+    const user = useSelector((state) => state.userv1);
+    console.log(user);
     useEffect(() => {
         let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
         setTotalPrice(formatVND(total));
@@ -28,7 +30,7 @@ const DropdownPage = ({
             }
 
             const data = {
-                userId: '65c6a7f9e8b3f2d5a4c12345',
+                userId: user._id,
                 items: selectedProduct.map((product) => ({
                     ingredientsId: product._id,
                     quantity: product.quantity || 1,
