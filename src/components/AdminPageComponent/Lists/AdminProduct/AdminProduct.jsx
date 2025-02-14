@@ -21,13 +21,17 @@ function AdminProduct() {
                 const productResponse = await Productservice.getAllIngredient();
                 const products = productResponse.data.ingredients; // Lấy danh sách ingredients
 
-                // 📌 Dùng Promise.all để lấy inventory của từng nguyên liệu
                 const inventoryData = await Promise.all(
                     products.map(async (product) => {
-                        const inventoryReponse = await InventoryService.getIngredientId(product._id);
-                        const inventory = inventoryReponse.data;
-                        return { ...product, inventory }; // Gộp thông tin inventory vào product
-                    }),
+                        try {
+                            const inventoryResponse = await InventoryService.getIngredientId(product._id);
+                            const inventory = inventoryResponse.data || { stock: 0, status: "Chưa có hàng" }; // Mặc định nếu chưa có
+                            return { ...product, inventory };
+                        } catch (error) {
+                            console.error(`Lỗi lấy inventory cho ${product._id}:, error`);
+                            return { ...product, inventory: { stock: 0, status: "Chưa có hàng" } }; // Xử lý lỗi và gán mặc định
+                        }
+                    })
                 );
 
                 setProducts(inventoryData); // Cập nhật state với danh sách đã có inventory

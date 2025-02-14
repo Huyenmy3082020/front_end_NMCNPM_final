@@ -82,6 +82,14 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
                     <Input placeholder="Nhập mô tả sản phẩm" />
                 </Form.Item>
 
+                <Form.Item
+                    label="Đơn vị"
+                    name="unit"
+                    rules={[{ required: true, message: 'Vui lòng nhập đơn vị của sản phẩm!' }]}
+                >
+                    <Input placeholder="Nhập đơn vị của sản phẩm vd : Túi 10Kg" />
+                </Form.Item>
+
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
                         Thêm sản phẩm

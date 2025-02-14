@@ -51,11 +51,11 @@ const TableComponent = ({ data, isActionEdit }) => {
             sorter: (a, b) => a.name.length - b.name.length,
             ...getColumnSearchProps('name'),
         },
-        {
-            title: 'Mô tả',
-            dataIndex: 'description',
-            key: 'description',
-        },
+        // {
+        //     title: 'Mô tả',
+        //     dataIndex: 'description',
+        //     key: 'description',
+        // },
         {
             title: 'Giá',
             dataIndex: 'price',
@@ -78,7 +78,13 @@ const TableComponent = ({ data, isActionEdit }) => {
             title: 'Số lượng tồn kho',
             dataIndex: 'inventory',
             key: 'inventoryStock',
-            render: (inventory) => inventory?.totalStock ?? 'Không có dữ liệu',
+            render: (inventory) => inventory?.totalStock ?? '0',
+        },
+        {
+            title: 'Đơn vị',
+            dataIndex: 'unit',
+            key: 'inventoryUnit',
+            render: (unit) => unit ?? 'Không có dữ liệu',
         },
         {
             title: 'Thao tác',
