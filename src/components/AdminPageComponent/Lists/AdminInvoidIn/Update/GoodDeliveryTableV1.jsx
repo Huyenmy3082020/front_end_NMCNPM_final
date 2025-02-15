@@ -14,7 +14,7 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
         }
     }, [selectedDelivery]); // Cập nhật khi selectedDelivery thay đổi
 
-    console.log(quantities);
+    console.log(selectedDelivery);
     const onUpdateQuantity = (id, value) => {
         setQuantities((prev) => ({
             ...prev,
@@ -28,6 +28,8 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
         price: item.price,
         quantity: quantities[item._id] || item.quantity, // Lấy từ state
     }));
+
+    console.log(dataSource);
 
     const totalPrice = dataSource.reduce((acc, item) => acc + item.price * item.quantity, 0);
 

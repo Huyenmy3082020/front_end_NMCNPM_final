@@ -22,6 +22,7 @@ const DropdownPage = ({
         handleTotalPrice(total);
     }, [selectedProduct]);
 
+    console.log(selectedProduct);
     const handleMenuClick = async (label) => {
         if (label === 'Nhập hàng') {
             if (!selectedProduct || selectedProduct.length === 0) {
@@ -35,6 +36,7 @@ const DropdownPage = ({
                     ingredientsId: product._id,
                     quantity: product.quantity || 1,
                     status: 'pending',
+                    price: product.price, // default test
                 })),
                 totalPrice: totalPrice,
                 deliveryAddress: deliveryAddress,

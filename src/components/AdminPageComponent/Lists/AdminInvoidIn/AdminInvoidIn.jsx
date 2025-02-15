@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
 import AutoCompleteAdmin from '../../HeaderPageAdmin/AutoCompleteAdmin.jsx';
-import GoodsDeliveryTable from './GoodsDeliveryTable .jsx';
+
 import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
+import GoodsDeliveryTable from './GoodsDeliveryTable .jsx';
 
 function AdminInvoidIn() {
     const [selectedProduct, setSelectedProduct] = useState([]);

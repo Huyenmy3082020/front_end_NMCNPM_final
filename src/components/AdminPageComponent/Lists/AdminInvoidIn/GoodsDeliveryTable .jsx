@@ -23,7 +23,7 @@ const GoodsDeliveryTable = () => {
                     items: delivery.items.map((item) => ({
                         _id: item._id,
                         ingredientName: item.ingredientsId?.name,
-                        price: item.ingredientsId?.price,
+                        price: item.price,
                         quantity: item.quantity,
                     })),
                 }));
