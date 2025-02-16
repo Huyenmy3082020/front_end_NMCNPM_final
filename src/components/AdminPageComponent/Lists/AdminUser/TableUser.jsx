@@ -65,7 +65,6 @@ const TableUser = ({ data }) => {
     };
 
     const handleSelectChange = (selectedKeys) => {
-        console.log('Selected Row Keys:', selectedKeys);
         setSelectedRowKeys(selectedKeys);
     };
 

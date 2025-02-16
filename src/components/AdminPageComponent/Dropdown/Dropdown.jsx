@@ -15,7 +15,6 @@ const DropdownPage = ({
     const [totalPrice, setTotalPrice] = useState(0);
 
     const user = useSelector((state) => state.userv1);
-    console.log(user);
     useEffect(() => {
         let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
         setTotalPrice(formatVND(total));
@@ -36,7 +35,6 @@ const DropdownPage = ({
                     quantity: product.quantity || 1,
                     status: 'pending',
                 })),
-                totalPrice: totalPrice,
                 deliveryAddress: deliveryAddress,
             };
 

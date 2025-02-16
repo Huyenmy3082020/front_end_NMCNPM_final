@@ -7,6 +7,5 @@ const axiosInstance = axios.create({
 
 export const getIngredientId = async (id) => {
     const res = await axiosInstance.get(`inventor/${id}`);
-    console.log('res:', res);
     return res.data;
 };

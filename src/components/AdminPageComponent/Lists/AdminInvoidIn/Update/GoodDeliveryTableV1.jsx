@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, InputNumber } from 'antd';
+import { Table, InputNumber, Button, message } from 'antd';
+import { update } from '../../../../../service/GoodsDeliveryService';
 
-const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
+const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModalVisible }) => {
     const [quantities, setQuantities] = useState({});
 
+    // 🔹 Cập nhật state `quantities` khi `selectedDelivery` thay đổi
     useEffect(() => {
         if (selectedDelivery?.items) {
             const initialQuantities = {};
@@ -12,13 +14,13 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
             });
             setQuantities(initialQuantities);
         }
-    }, [selectedDelivery]); // Cập nhật khi selectedDelivery thay đổi
+    }, [selectedDelivery]);
 
-    console.log(quantities);
+    // 🔹 Xử lý cập nhật số lượng từng sản phẩm
     const onUpdateQuantity = (id, value) => {
         setQuantities((prev) => ({
             ...prev,
-            [id]: value, // Cập nhật số lượng cho từng sản phẩm theo `_id`
+            [id]: value,
         }));
     };
 
@@ -26,10 +28,33 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
         _id: item._id,
         name: item.ingredientName,
         price: item.price,
-        quantity: quantities[item._id] || item.quantity, // Lấy từ state
+        quantity: quantities[item._id] || item.quantity, // Sử dụng giá trị từ `quantities`
     }));
 
+    // 🔹 Tính tổng tiền dựa trên số lượng cập nhật
     const totalPrice = dataSource.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+    const dataUpdate = {
+        items: selectedDelivery.items.map((item) => ({
+            _id: item._id,
+            quantity: quantities[item._id] || item.quantity,
+            priceAtPurchase: item.price, // ✅ Thêm giá lúc mua
+            ingredientNameAtPurchase: item.ingredientNameAtPurchase,
+            ingredientsId: item.ingredientsId,
+        })),
+    };
+
+    // 🔹 Hàm cập nhật đơn hàng
+    const handleUpdate = async () => {
+        try {
+            await update(selectedDelivery._id, dataUpdate);
+            setIsModalVisible(false);
+            message.sussess('Delivery updated successfully');
+        } catch (error) {
+            console.error('❌ Lỗi cập nhật:', error);
+            alert('Có lỗi xảy ra khi cập nhật đơn hàng');
+        }
+    };
 
     const columns = [
         {
@@ -71,40 +96,17 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery }) => {
         },
     ];
 
-    const dataUpdate = {
-        _id: selectedDelivery._id,
-        items: dataSource.map((item) => ({ ...item, quantity: quantities[item._id] || item.quantity })),
-    };
-
-    console.log(dataUpdate);
-    const handleUpdate = () => {
-        console.log('Update đơn hàng:', selectedDelivery);
-    };
     return (
         <div>
-            <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false} />
+            <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false} 
+            />
             <div style={{ marginTop: '10px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold', color: 'red' }}>
                 Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
             </div>
 
-            <button
-                style={{
-                    padding: '8px 16px',
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    color: 'white',
-                    backgroundColor: '#1890ff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.3s',
-                }}
-                onMouseOver={(e) => (e.target.style.backgroundColor = '#40a9ff')}
-                onMouseOut={(e) => (e.target.style.backgroundColor = '#1890ff')}
-                onClick={handleUpdate}
-            >
+            <Button type="primary" style={{ marginTop: '10px' }} onClick={handleUpdate}>
                 Cập nhật đơn hàng
-            </button>
+            </Button>
         </div>
     );
 };

@@ -23,7 +23,6 @@ const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
     const order = useSelector((state) => state.order); // Lấy toàn bộ order
     const orderItems = useSelector((state) => state.order.orderItems); // Lấy danh sách sản phẩm trong order
 
-    console.log('Order data:', order);
     const columns = [
         {
             title: 'Tên sản phẩm',

@@ -12,9 +12,7 @@ function AdminOrder() {
     const dispatch = useDispatch();
     const [isActionImport, setIsActionImport] = useState(false);
     const state = useSelector((state) => state);
-    console.log('Redux State:', state);
 
-    console.log(selectedProduct);
     useEffect(() => {
         if (isActionImport) {
             setSelectedProduct([]);
@@ -42,10 +40,8 @@ function AdminOrder() {
 
     const handleAlo = async () => {
         setSelectedProduct([]);
-        console.log('alo');
     };
     const [deliveryAddress, setDeliveryAddress] = useState('');
-    console.log(deliveryAddress);
 
     return (
         <div>

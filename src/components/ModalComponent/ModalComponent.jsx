@@ -9,18 +9,17 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
 
     const dispatch = useDispatch();
     const handleSubmit = async (values) => {
-        console.log('Received values of form: ', values);
         onFinish(values);
         form.resetFields();
         try {
             const res = await ProductService.createProduct(values);
-            console.log('Product created', res.ingredient);
             onSuccess(res.ingredient);
             dispatch(addProduct(res.ingredient));
         } catch (err) {
             console.log(err);
         }
     };
+    const unitOptions = ['ml', 'l', 'g', 'kg', 'cái', 'hộp', 'gói', 'chai', 'ly'];
 
     return (
         <Modal title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
@@ -41,7 +40,6 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
                 >
                     <Input placeholder="Nhập tên sản phẩm" />
                 </Form.Item>
-
                 <Form.Item
                     label="Danh mục sản phẩm"
                     name="category"
@@ -55,7 +53,6 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
                         ))}
                     </Select>
                 </Form.Item>
-
                 <Form.Item
                     label="Nhà cung cấp"
                     name="supplier"
@@ -69,11 +66,9 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
                         ))}
                     </Select>
                 </Form.Item>
-
                 <Form.Item label="Giá" name="price" rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}>
                     <Input placeholder="Nhập giá" />
                 </Form.Item>
-
                 <Form.Item
                     label="Mô tả"
                     name="description"
@@ -81,15 +76,20 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
                 >
                     <Input placeholder="Nhập mô tả sản phẩm" />
                 </Form.Item>
-
                 <Form.Item
                     label="Đơn vị"
                     name="unit"
-                    rules={[{ required: true, message: 'Vui lòng nhập đơn vị của sản phẩm!' }]}
+                    rules={[{ required: true, message: 'Vui lòng chọn đơn vị của sản phẩm!' }]}
                 >
-                    <Input placeholder="Nhập đơn vị của sản phẩm vd : Túi 10Kg" />
+                    <Select placeholder="Chọn đơn vị">
+                        {unitOptions.map((unit) => (
+                            <Select.Option key={unit} value={unit}>
+                                {unit}
+                            </Select.Option>
+                        ))}
+                    </Select>
                 </Form.Item>
-
+                ;
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
                         Thêm sản phẩm

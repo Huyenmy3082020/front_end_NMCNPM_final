@@ -1,18 +1,6 @@
 import Search from 'antd/es/transfer/search';
 import styles from '../../AdminPageComponent/HeaderPageAdmin/HeaderPageAdminProduct.module.scss';
-import {
-    Discount,
-    FullScreen,
-    GiaoDien,
-    IconDashboard,
-    IconStart,
-    Login,
-    MessageAdmin,
-    Notification,
-    ThongTinThanhToan,
-    TotalSell,
-    User,
-} from '../../IconComponent/IconComponent';
+
 import { AutoComplete, Dropdown, message } from 'antd';
 import AutoCompleteAdmin from '../HeaderPageAdmin/AutoCompleteAdmin';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,9 +13,10 @@ import {
     GlobalOutlined,
     LogoutOutlined,
 } from '@ant-design/icons';
+import { logout } from '../../../redux/slides/UserSlideV1';
+import * as UserService from '../../../service/Userservice';
+import { useNavigate } from 'react-router-dom';
 function HeaderPageAdminProduct({ onSelectProduct }) {
-    const user = useSelector((state) => state.userv1);
-    console.log(user.avatar);
     const dispatch = useDispatch();
     const handleDelete = () => {
         // delete all products
@@ -39,24 +28,35 @@ function HeaderPageAdminProduct({ onSelectProduct }) {
             key: '1',
             label: 'Thiết lập tài khoản',
             icon: <SettingOutlined />,
-            onClick: () => handleMenuClick('Xác nhận đơn hàng'),
+            onClick: () => handleMenuClick('Thiết lập tài khoản'),
         },
         {
             key: '2',
             label: 'Ngôn ngữ',
             icon: <GlobalOutlined />,
-            onClick: () => handleMenuClick('Gửi hàng đi'),
+            onClick: () => handleMenuClick('Ngôn ngữ'),
         },
         {
             key: '3',
             label: 'Đăng xuất',
             icon: <LogoutOutlined />,
-            onClick: () => handleMenuClick('Nhập hàng'),
+            onClick: () => handleMenuClick('Đăng xuất'),
         },
     ];
 
+    const navigate = useNavigate();
     const handleMenuClick = async (label) => {
-        console.log(label);
+        if (label === 'Đăng xuất') {
+            try {
+                await UserService.logoutUser(); // Gọi API logout trước
+                dispatch(logout()); // Xóa dữ liệu user trong Redux
+                message.success('Đăng xuất thành công!');
+                navigate('/sign-in'); // Điều hướng về trang đăng nhập
+            } catch (error) {
+                message.error('Đăng xuất thất bại!');
+                console.error('Lỗi khi đăng xuất:', error);
+            }
+        }
     };
 
     return (

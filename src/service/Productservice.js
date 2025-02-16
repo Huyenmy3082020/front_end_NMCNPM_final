@@ -7,10 +7,7 @@ const axiosInstance = axios.create({
 });
 
 export const createProduct = async (data) => {
-    console.log(data);
-
     const res = await axiosInstance.post(`ingredient`, data);
-    console.log('res:', res);
     return res.data;
 };
 
@@ -18,11 +15,6 @@ export const deleteProduct = async (id) => {
     const res = await axiosInstance.delete(`ingredient/${id}`);
     return res.data;
 };
-
-// export const updateProduct = async (id, data) => {
-//     const res = await axiosInstance.put(`product/updateProduct/${id}`, data);
-//     return res.data;
-// };
 
 export const updateProduct = async (id, data) => {
     try {

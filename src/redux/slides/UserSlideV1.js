@@ -13,7 +13,6 @@ export const UserSliceV1 = createSlice({
     initialState,
     reducers: {
         updateUser: (state, action) => {
-            console.log(action);
             state._id = action.payload._id || state._id;
             state.email = action.payload.email || state.email;
             state.role = action.payload.role || state.role;

@@ -37,7 +37,6 @@ function AdminInvoidIn() {
 
     const handleAlo = async () => {
         setSelectedProduct([]);
-        console.log('alo');
     };
     return (
         <div>

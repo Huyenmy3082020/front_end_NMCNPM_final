@@ -3,7 +3,7 @@ import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'a
 import { EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import * as Productservice from '../../service/Productservice';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteProduct } from '../../redux/slides/ProductSlide';
+import { deleteProduct, updateProduct, upsertProduct } from '../../redux/slides/ProductSlide';
 
 //
 
@@ -51,23 +51,14 @@ const TableComponent = ({ data, isActionEdit }) => {
             sorter: (a, b) => a.name.length - b.name.length,
             ...getColumnSearchProps('name'),
         },
-        // {
-        //     title: 'Mô tả',
-        //     dataIndex: 'description',
-        //     key: 'description',
-        // },
+
         {
             title: 'Giá',
             dataIndex: 'price',
             key: 'price',
             sorter: (a, b) => a.price - b.price,
         },
-        {
-            title: 'Danh mục',
-            dataIndex: 'categoryId',
-            key: 'category',
-            render: (categoryId) => categoryId?.name || 'N/A',
-        },
+
         {
             title: 'Trạng thái tồn kho',
             dataIndex: 'inventory',
@@ -117,24 +108,28 @@ const TableComponent = ({ data, isActionEdit }) => {
         setIsModalOpen(false);
         setCurrentProduct(null);
     };
-
-    // const handleEdit = (id, values) => {
-    //     // lay dc id
-    //     console.log('Edit product:', id);
-    //     try {
-    //         // goi api sua
-    //     } catch (error) {}
-    //     setCurrentProduct(product);
-    //     setIsModalOpen(true);
-    // };
+    const dispatch = useDispatch();
 
     const handleEdit = (product) => {
         console.log('Edit product:', product);
-        setCurrentProduct(product); // Cập nhật sản phẩm đang chỉnh sửa
-        form.setFieldsValue(product); // Gán dữ liệu vào form
-        setIsModalOpen(true); // Mở modal chỉnh sửa
+
+        setCurrentProduct(product);
+        form.resetFields();
+        form.setFieldsValue(product);
+
+        setIsModalOpen(true);
     };
-    const dispatch = useDispatch();
+
+    const handleSave = () => {
+        form.validateFields()
+            .then((values) => {
+                dispatch(updateProduct({ id: currentProduct.id, ...values }));
+                setIsModalOpen(false);
+            })
+            .catch((error) => {
+                console.error('Validation failed:', error);
+            });
+    };
 
     const handleDelete = async (id) => {
         try {
@@ -148,17 +143,18 @@ const TableComponent = ({ data, isActionEdit }) => {
         }
     };
 
-    // const onFinish = (values) => {};
     const onFinish = async (values) => {
         try {
             if (currentProduct) {
-                // Gọi API updateProduct
                 const updatedProduct = await Productservice.updateProduct(currentProduct._id, values);
-                console.log('Product updated:', updatedProduct);
+                console.log(updatedProduct);
+
+                dispatch(updateProduct(updatedProduct.ingredient));
+
+                form.resetFields();
+                setIsModalOpen(false);
+                setCurrentProduct(null);
             }
-            form.resetFields(); // Reset form sau khi cập nhật xong
-            setIsModalOpen(false);
-            setCurrentProduct(null);
         } catch (error) {
             console.error('Error updating product:', error);
         }
@@ -169,12 +165,9 @@ const TableComponent = ({ data, isActionEdit }) => {
     };
 
     const handleSelectChange = (selectedKeys) => {
-        console.log('Selected Row Keys:', selectedKeys);
         setSelectedRowKeys(selectedKeys);
     };
 
-    const product = useSelector((state) => state.product.products);
-    console.log('Product:', product);
     return (
         <div>
             <Radio.Group
@@ -196,8 +189,13 @@ const TableComponent = ({ data, isActionEdit }) => {
                 columns={columns()}
                 dataSource={data}
                 rowKey="_id"
+                pagination={{
+                    pageSize: 5,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '20', '50'],
+                    showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} sản phẩm`,
+                }}
             />
-            <Button type="primary">Xoa tat</Button>
 
             <Modal
                 title={currentProduct ? 'Edit Product' : 'Create Product'}
@@ -225,26 +223,6 @@ const TableComponent = ({ data, isActionEdit }) => {
                         <Input placeholder="Enter name product" />
                     </Form.Item>
 
-                    {/* <Form.Item
-                        label="Image"
-                        name="image"
-                        rules={[{ required: true, message: 'Please input your image URL!' }]}
-                    >
-                        <Input placeholder="Enter image URL" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Type"
-                        name="type"
-                        rules={[{ required: true, message: 'Please input product type!' }]}
-                    >
-                        <Input placeholder="Enter product type" />
-                    </Form.Item> */}
-
-                    {/* <Form.Item label="Price" name="price" rules={[{ required: true, message: 'Please input price!' }]}>
-                        <Input placeholder="Enter price" />
-                    </Form.Item> */}
-
                     <Form.Item
                         label="Price"
                         name="price"
@@ -256,38 +234,6 @@ const TableComponent = ({ data, isActionEdit }) => {
                         <Input placeholder="Enter price" />
                     </Form.Item>
 
-                    {/* <Form.Item
-                        label="Count In Stock"
-                        name="countInStock"
-                        rules={[{ required: true, message: 'Please input count in stock!' }]}
-                    >
-                        <Input placeholder="Enter count in stock" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Rating"
-                        name="rating"
-                        rules={[{ required: true, message: 'Please input rating!' }]}
-                    >
-                        <Input placeholder="Enter rating" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Discount"
-                        name="discount"
-                        rules={[{ required: true, message: 'Please input discount!' }]}
-                    >
-                        <Input placeholder="Enter discount" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Selled"
-                        name="selled"
-                        rules={[{ required: true, message: 'Please input selled!' }]}
-                    >
-                        <Input placeholder="Enter selled" />
-                    </Form.Item> */}
-
                     <Form.Item
                         label="Description"
                         name="description"
@@ -296,13 +242,6 @@ const TableComponent = ({ data, isActionEdit }) => {
                         <Input placeholder="Enter description" />
                     </Form.Item>
 
-                    {/* <Form.Item
-                        label="Category"
-                        name="category"
-                        rules={[{ required: true, message: 'Please input Category!' }]}
-                    >
-                        <Input placeholder="Enter Category" />
-                    </Form.Item> */}
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Button type="primary" htmlType="submit">
                             Submit

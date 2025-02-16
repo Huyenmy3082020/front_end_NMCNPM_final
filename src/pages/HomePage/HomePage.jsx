@@ -93,9 +93,6 @@ function HomePage() {
     }
 
     const width = '150px';
-    products.map((product) => {
-        console.log(product.image);
-    });
 
     return (
         <div className={styles.wrapper}>

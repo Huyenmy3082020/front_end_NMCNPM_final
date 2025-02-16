@@ -22,6 +22,14 @@ export const productSlice = createSlice({
                 state.products.push(action.payload);
             }
         },
+        updateProduct: (state, action) => {
+            const updatedProduct = action.payload;
+            console.log(updatedProduct);
+            const index = state.products.findIndex((p) => p._id === updatedProduct._id);
+            if (index !== -1) {
+                state.products[index] = updatedProduct; // ✅ Cập nhật toàn bộ dữ liệu sản phẩm
+            }
+        },
         deleteProduct: (state, action) => {
             state.products = state.products.filter((p) => p._id !== action.payload);
         },
@@ -32,6 +40,6 @@ export const productSlice = createSlice({
     },
 });
 
-export const { addProduct, upsertProduct, deleteProduct, deleteAllProducts } = productSlice.actions;
+export const { addProduct, upsertProduct, deleteProduct, deleteAllProducts, updateProduct } = productSlice.actions;
 
 export default productSlice.reducer;

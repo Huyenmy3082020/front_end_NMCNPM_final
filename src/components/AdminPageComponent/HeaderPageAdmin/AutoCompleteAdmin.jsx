@@ -13,7 +13,6 @@ const AutoCompleteAdmin = ({ onSelectProduct }) => {
         const fetchIngredient = async () => {
             try {
                 const res = await IngredientService.getAllIngredient();
-                console.log('res:', res.data.ingredients);
                 const ingredients = res.data.ingredients || [];
                 setProducts(ingredients);
                 setOptions(
@@ -36,8 +35,6 @@ const AutoCompleteAdmin = ({ onSelectProduct }) => {
 
     const dispatch = useDispatch();
     const handleSelect = (value, option) => {
-        console.log('Product được chọn:', option.product); // Kiểm tra dữ liệu
-
         if (onSelectProduct) {
             onSelectProduct(option.product);
             setSearchValue('');
@@ -48,11 +45,6 @@ const AutoCompleteAdmin = ({ onSelectProduct }) => {
                     totalPrice: option.product.price || 0,
                 }),
             );
-
-            console.log('Redux action đã dispatch:', {
-                orderItems: [option.product],
-                totalPrice: option.product.price || 0,
-            });
         }
     };
 

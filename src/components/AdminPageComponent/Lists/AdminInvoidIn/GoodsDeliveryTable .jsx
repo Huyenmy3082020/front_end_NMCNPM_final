@@ -16,15 +16,16 @@ const GoodsDeliveryTable = () => {
             try {
                 const goods = await fetchGoodsDeliveries();
                 const enrichedData = goods.map((delivery) => ({
-                    _id: generateDisplayId(delivery._id),
+                    _id: delivery._id,
                     userEmail: delivery.userId?.email,
                     userPhone: delivery.userId?.phone,
                     deliveryDate: delivery.deliveryDate,
                     items: delivery.items.map((item) => ({
                         _id: item._id,
-                        ingredientName: item.ingredientsId?.name,
-                        price: item.ingredientsId?.price,
+                        ingredientName: item.ingredientsId?.name || 'Unknown', // ✅ Đảm bảo có tên nguyên liệu
+                        price: item.priceAtPurchase,
                         quantity: item.quantity,
+                        ingredientsId: item.ingredientsId?._id || null, // ✅ Thêm ingredientsId
                     })),
                 }));
 
@@ -39,15 +40,10 @@ const GoodsDeliveryTable = () => {
         fetchData();
     }, []);
 
-    console.log(data);
-
-    // Hàm mở modal khi bấm View
     const handleView = (record) => {
-        console.log(record);
         setSelectedDelivery(record);
         setIsModalVisible(true);
     };
-    console.log(selectedDelivery);
 
     const columns = [
         { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id' },
@@ -70,10 +66,20 @@ const GoodsDeliveryTable = () => {
         },
     ];
 
-    console.log(selectedDelivery);
     return (
         <>
-            <Table columns={columns} dataSource={data} loading={loading} rowKey="_id" />
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                rowKey="_id"
+                pagination={{
+                    pageSize: 5,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '20', '50'],
+                    showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} sản phẩm`,
+                }}
+            />
 
             <Modal
                 title="Chi tiết Phiếu Nhập"
@@ -82,7 +88,13 @@ const GoodsDeliveryTable = () => {
                 footer={null}
                 width={1000}
             >
-                {selectedDelivery && <GoodsDeliveryTableV1 selectedDelivery={selectedDelivery} />}
+                {selectedDelivery && (
+                    <GoodsDeliveryTableV1
+                        selectedDelivery={selectedDelivery}
+                        setSelectedDelivery={setSelectedDelivery}
+                        setIsModalVisible={setIsModalVisible}
+                    />
+                )}
             </Modal>
         </>
     );

@@ -3,11 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Fragment } from 'react';
 import routes from './routes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { jwtDecode } from 'jwt-decode';
-import * as Userservice from './service/Userservice';
 import { useDispatch } from 'react-redux';
 import { logout, updateUser } from './redux/slides/UserSlideV1';
-import { resetCard } from './redux/slides/CartSlide';
+import * as Userservice from './service/Userservice';
 
 const queryClient = new QueryClient();
 
@@ -15,93 +13,20 @@ const App = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const { decode, storageData } = handleDecoded();
-        if (decode?.id) {
-            handleGetDetailUser(decode?.id, storageData);
-        }
+        handleGetDetailUser();
     }, []);
 
-    const handleGetDetailUser = async (id, token) => {
+    const handleGetDetailUser = async () => {
         try {
-            const res = await Userservice.getDetailUser(id, token);
-            console.log(res.data);
-            dispatch(updateUser({ ...res.data, access_token: token }));
+            const res = await Userservice.getDetailUser();
+            dispatch(updateUser({ ...res.data }));
         } catch (error) {
             if (error.response?.status === 401) {
-                console.error('Token expired. Trying to refresh...');
-                const newToken = await refreshAccessToken();
-                if (newToken) {
-                    return handleGetDetailUser(id, newToken);
-                }
-            }
-            console.error('Error fetching user details:', error);
-        }
-    };
-
-    const handleDecoded = () => {
-        const storageData = localStorage.getItem('access_token');
-        let decode = {};
-        if (storageData) {
-            try {
-                decode = jwtDecode(storageData);
-            } catch (error) {
-                console.error('Error decoding token:', error);
+                console.error('Token expired. Logging out...');
+                dispatch(logout());
             }
         }
-        return { decode, storageData };
     };
-
-    const refreshAccessToken = async () => {
-        try {
-            const { data } = await Userservice.refreshToken();
-            if (data?.access_token) {
-                console.log('data.access_token', data.access_token);
-
-                localStorage.setItem('access_token', data.access_token);
-                return data.access_token;
-            }
-        } catch (error) {
-            console.error('Error refreshing access token:', error);
-        }
-        return null;
-    };
-
-    Userservice.axiosJWT.interceptors.request.use(
-        async (config) => {
-            try {
-                const currentTime = Math.floor(new Date().getTime() / 1000); // Convert to seconds
-                const { decode, storageData } = handleDecoded();
-
-                if (decode?.exp && decode?.exp < currentTime) {
-                    // Nếu token hết hạn, tự động refresh token
-                    const newToken = await refreshAccessToken();
-                    if (newToken) {
-                        config.headers['authorization'] = `Bearer ${newToken}`;
-                    } else {
-                        dispatch(logout());
-
-                        console.error('Failed to refresh token. No access_token returned.');
-                    }
-                } else {
-                    const tokenFromLocalStorage = localStorage.getItem('access_token');
-                    if (tokenFromLocalStorage) {
-                        config.headers['authorization'] = `Bearer ${tokenFromLocalStorage}`;
-                    } else {
-                        console.error('No token found in localStorage.');
-                    }
-                }
-
-                return config;
-            } catch (error) {
-                console.error('Error in request interceptor:', error);
-                return Promise.reject(error);
-            }
-        },
-        (error) => {
-            console.error('Request error:', error);
-            return Promise.reject(error);
-        },
-    );
 
     return (
         <QueryClientProvider client={queryClient}>

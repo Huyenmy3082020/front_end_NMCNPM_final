@@ -7,7 +7,6 @@ const axiosInstance = axios.create({
 
 export const createOrder = async (data) => {
     try {
-        console.log(data);
         const res = await axiosInstance.post(`good`, data);
         return res.data;
     } catch (error) {
@@ -37,7 +36,6 @@ export const getOrderPaid = async () => {
 };
 
 export const deleteOrder = async (id) => {
-   console.log(id);
     try {
         const res = await axiosInstance.delete(`good/${id}`);
         return res.data;

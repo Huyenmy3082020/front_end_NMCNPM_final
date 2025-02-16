@@ -8,12 +8,13 @@ import TableComponent from '../../../TableComponent/TableComponent.jsx';
 import { useNavigate } from 'react-router-dom';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
 import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteAllProducts } from '../../../../redux/slides/ProductSlide.js';
 
 function AdminProduct() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    console.log(products);
     useEffect(() => {
         const fetchProductAll = async () => {
             try {
@@ -32,10 +33,7 @@ function AdminProduct() {
                             return { ...product, inventory: { stock: 0, status: 'Chưa có hàng' } }; // Xử lý lỗi và gán mặc định
                         }
                     }),
-
                 );
-
-                console.log(inventoryData);
 
                 setProducts(inventoryData); // Cập nhật state với danh sách đã có inventory
             } catch (error) {
@@ -59,13 +57,10 @@ function AdminProduct() {
     };
 
     const onFinish = (values) => {
-        console.log('Success:', values);
         setIsModalOpen(false);
     };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+    const onFinishFailed = (errorInfo) => {};
 
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -74,7 +69,6 @@ function AdminProduct() {
         const fetchCategories = async () => {
             try {
                 const res = await CategoryService.getAll();
-                console.log(res.categories);
                 setCategories(res.categories);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -86,7 +80,6 @@ function AdminProduct() {
         const fetchSuppliers = async () => {
             try {
                 const res = await CategoryService.getAllSupplies();
-                console.log(res.suppliers);
                 setSuppliers(res.suppliers);
             } catch (error) {
                 console.error('Error fetching suppliers:', error);
@@ -94,14 +87,20 @@ function AdminProduct() {
         };
         fetchSuppliers();
     }, []);
-    /// Thêm sản phẩm vào danh sách
     const handleSuccess = (res) => {
         setProducts((prevProducts) => [...prevProducts, res]);
     };
+    const dispatch = useDispatch();
+    const XoaTat = () => {
+        dispatch(deleteAllProducts());
+    };
+    const product = useSelector((state) => state.product.products);
+    console.log(product);
     return (
         <div>
             <HeaderPageAdminProduct />
             <div style={{ backgroundColor: '#f4f4f4' }}>
+                <h1 onClick={XoaTat}> xoa</h1>
                 <h1 style={{ fontSize: '2.6rem', marginLeft: '16px', paddingTop: '16px' }}>Thông tin sản phẩm</h1>
                 <Button
                     style={{
@@ -115,7 +114,7 @@ function AdminProduct() {
                 >
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
-                <TableComponent data={products} />
+                <TableComponent data={product} />
 
                 {/* ModalComponent */}
                 <ModalComponent
@@ -127,6 +126,7 @@ function AdminProduct() {
                     categories={categories}
                     suppliers={suppliers}
                     onSuccess={handleSuccess}
+                    setProducts={setProducts}
                 />
             </div>
         </div>
