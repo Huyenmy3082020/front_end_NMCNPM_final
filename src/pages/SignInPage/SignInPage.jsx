@@ -14,6 +14,7 @@ import { logout, updateUser } from '../../redux/slides/UserSlideV1';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Userservice from '../../service/Userservice';
 import { useNavigate } from 'react-router-dom';
+import { axiosJWT } from '../../service';
 function SignInPage() {
     const [email, setEmmail] = useState('');
     const [password, setPassword] = useState('');
@@ -93,7 +94,7 @@ function SignInPage() {
         return null;
     };
 
-    Userservice.axiosJWT.interceptors.request.use(
+    axiosJWT.interceptors.request.use(
         async (config) => {
             try {
                 const currentTime = Math.floor(new Date().getTime() / 1000); // Convert to seconds

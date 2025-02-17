@@ -4,9 +4,19 @@ import * as ProductService from '../../service/Productservice';
 import { useDispatch } from 'react-redux';
 import { addProduct, upsertProduct } from '../../redux/slides/ProductSlide';
 
-const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, categories, suppliers, onSuccess }) => {
+const ModalComponent = ({
+    isModalOpen,
+    products,
+    handleCancel,
+    onFinish,
+    onFinishFailed,
+    categories,
+    suppliers,
+    onSuccess,
+}) => {
     const [form] = Form.useForm();
 
+    console.log(products);
     const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         onFinish(values);
@@ -14,7 +24,7 @@ const ModalComponent = ({ isModalOpen, handleCancel, onFinish, onFinishFailed, c
         try {
             const res = await ProductService.createProduct(values);
             onSuccess(res.ingredient);
-            dispatch(addProduct(res.ingredient));
+            dispatch(addProduct(products));
         } catch (err) {
             console.log(err);
         }

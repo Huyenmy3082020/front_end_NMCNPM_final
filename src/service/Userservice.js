@@ -2,12 +2,7 @@ import axios from 'axios';
 import axiosInstance from '../ultil/axios';
 import { logout } from '../redux/slides/UserSlideV1';
 import { store } from '../redux/store';
-
-// Tạo một axios instance để tự động refresh token khi cần
-export const axiosJWT = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
-    withCredentials: true, // ✅ Trình duyệt sẽ tự động gửi cookie
-});
+import { axiosJWT } from '.';
 
 // 🌟 Interceptor request: Không cần chỉnh sửa
 axiosJWT.interceptors.request.use(

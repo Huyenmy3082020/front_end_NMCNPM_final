@@ -1,5 +1,6 @@
 import { ConsoleSqlOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { axiosJWT } from '.';
 
 // Tạo instance của axios với URL từ biến môi trường
 const axiosInstance = axios.create({
@@ -7,18 +8,28 @@ const axiosInstance = axios.create({
 });
 
 export const createProduct = async (data) => {
-    const res = await axiosInstance.post(`ingredient`, data);
+    const res = await axiosJWT.post(`ingredient`, data);
     return res.data;
 };
 
 export const deleteProduct = async (id) => {
-    const res = await axiosInstance.delete(`ingredient/${id}`);
-    return res.data;
+    try {
+        const res = await axiosJWT.delete(`ingredient/${id}`);
+        return res.data;
+    } catch (error) {
+        if (error.response) {
+            console.error('Lỗi từ server:', error.response.data);
+            throw new Error(error.response.data.message || 'Có lỗi xảy ra!');
+        } else {
+            console.error('Lỗi không xác định:', error.message);
+            throw new Error('Có lỗi xảy ra, không thể kết nối với server!');
+        }
+    }
 };
 
 export const updateProduct = async (id, data) => {
     try {
-        const res = await axiosInstance.put(`ingredient/${id}`, data);
+        const res = await axiosJWT.put(`ingredient/${id}`, data);
         return res.data;
     } catch (error) {
         console.error('Error updating product:', error);

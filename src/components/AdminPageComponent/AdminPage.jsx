@@ -76,7 +76,7 @@ const renderPage = (key) => {
         case 'invoid-in':
             return <AdminInvoidIn></AdminInvoidIn>;
         case 'invoid-out':
-            return <AdminOrder></AdminOrder>;
+            return <AdminInvoidIn></AdminInvoidIn>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
         default: {

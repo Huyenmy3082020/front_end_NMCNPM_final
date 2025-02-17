@@ -9,23 +9,25 @@ import { useNavigate } from 'react-router-dom';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
 import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteAllProducts } from '../../../../redux/slides/ProductSlide.js';
+import { addProduct, deleteAllProducts } from '../../../../redux/slides/ProductSlide.js';
 
 function AdminProduct() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const dispatch = useDispatch();
+    console.log(products);
     useEffect(() => {
         const fetchProductAll = async () => {
             try {
-                // 📌 Lấy danh sách nguyên liệu
                 const productResponse = await Productservice.getAllIngredient();
                 const products = productResponse.data.ingredients;
 
+                console.log(products);
                 const inventoryData = await Promise.all(
                     products.map(async (product) => {
                         try {
                             const inventoryResponse = await InventoryService.getIngredientId(product._id);
+                            console.log(inventoryResponse);
                             const inventory = inventoryResponse.data || { stock: 0, status: 'Chưa có hàng' }; // Mặc định nếu chưa có
                             return { ...product, inventory };
                         } catch (error) {
@@ -35,15 +37,16 @@ function AdminProduct() {
                     }),
                 );
 
-                setProducts(inventoryData); // Cập nhật state với danh sách đã có inventory
+                console.log(inventoryData);
+                setProducts(inventoryData);
+                // Dispatch action để cập nhật sản phẩm vào Redux store
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
         };
 
         fetchProductAll();
-    }, []);
-
+    }, [dispatch]);
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -90,12 +93,13 @@ function AdminProduct() {
     const handleSuccess = (res) => {
         setProducts((prevProducts) => [...prevProducts, res]);
     };
-    const dispatch = useDispatch();
+
     const XoaTat = () => {
         dispatch(deleteAllProducts());
     };
     const product = useSelector((state) => state.product.products);
     console.log(product);
+    console.log(products);
     return (
         <div>
             <HeaderPageAdminProduct />
@@ -114,7 +118,7 @@ function AdminProduct() {
                 >
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
-                <TableComponent data={product} />
+                <TableComponent data={products} />
 
                 {/* ModalComponent */}
                 <ModalComponent
@@ -126,6 +130,7 @@ function AdminProduct() {
                     categories={categories}
                     suppliers={suppliers}
                     onSuccess={handleSuccess}
+                    products={products}
                     setProducts={setProducts}
                 />
             </div>

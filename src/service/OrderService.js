@@ -14,6 +14,16 @@ export const createOrder = async (data) => {
         throw new Error('Failed to create order');
     }
 };
+export const Export = async (data) => {
+    try {
+        const res = await axiosInstance.post(`shipment`, data);
+        console.log(res);
+        return res.data;
+    } catch (error) {
+        console.error('Error creating order:', error.response || error.message || error);
+        throw new Error('Failed to create order');
+    }
+};
 
 export const getOrder = async () => {
     try {
