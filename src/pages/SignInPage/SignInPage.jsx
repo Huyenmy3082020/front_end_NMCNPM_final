@@ -12,9 +12,7 @@ import { useState } from 'react';
 import * as UserService from '../../service/Userservice';
 import { logout, updateUser } from '../../redux/slides/UserSlideV1';
 import { useDispatch, useSelector } from 'react-redux';
-import * as Userservice from '../../service/Userservice';
 import { useNavigate } from 'react-router-dom';
-import { axiosJWT } from '../../service';
 import * as Productservice from '../../service/Productservice';
 import { addProductAll, addProductv1 } from '../../redux/slides/ProductSlide';
 function SignInPage() {
