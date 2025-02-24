@@ -13,7 +13,8 @@ const AutoCompleteAdmin = ({ onSelectProduct }) => {
         const fetchIngredient = async () => {
             try {
                 const res = await IngredientService.getAllIngredient();
-                const ingredients = res.data.ingredients || [];
+                console.log(res);
+                const ingredients = res.ingredients || [];
                 setProducts(ingredients);
                 setOptions(
                     ingredients.map((item) => ({

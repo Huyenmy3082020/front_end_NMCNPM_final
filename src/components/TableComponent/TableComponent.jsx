@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input } from 'antd';
-import { EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { Divider, Radio, Table, Button, Popconfirm, Modal, Form, Input, Tooltip, Tag } from 'antd';
+import {
+    EditOutlined,
+    DeleteOutlined,
+    SearchOutlined,
+    CloseCircleOutlined,
+    CheckCircleOutlined,
+    QuestionCircleOutlined,
+} from '@ant-design/icons';
 import * as Productservice from '../../service/Productservice';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, updateProduct, upsertProduct } from '../../redux/slides/ProductSlide';
+import { useNavigate } from 'react-router-dom';
+import { formatVND } from '../../ultil';
 
 //
 
@@ -43,6 +52,7 @@ const TableComponent = ({ data, isActionEdit }) => {
         onFilter: (value, record) => record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
     });
 
+    console.log(data);
     const columns = () => [
         {
             title: 'Tên sản phẩm',
@@ -56,20 +66,33 @@ const TableComponent = ({ data, isActionEdit }) => {
             title: 'Giá',
             dataIndex: 'price',
             key: 'price',
+            render: (price) => formatVND(price),
             sorter: (a, b) => a.price - b.price,
         },
 
         {
             title: 'Trạng thái tồn kho',
-            dataIndex: 'inventory',
-            key: 'inventoryStatus',
-            render: (inventory) => inventory?.statusList?.join(', ') || 'Không có dữ liệu',
+            dataIndex: 'statusList',
+            key: 'statusList',
+            render: (statusList) => {
+                const isOutOfStock = statusList.includes('out-of-stock');
+
+                return isOutOfStock ? (
+                    <Tooltip title="Hết hàng">
+                        <Tag color="red">Out-stock</Tag>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Còn hàng">
+                        <Tag color="green">In-stock</Tag>
+                    </Tooltip>
+                );
+            },
         },
         {
             title: 'Số lượng tồn kho',
-            dataIndex: 'inventory',
-            key: 'inventoryStock',
-            render: (inventory) => inventory?.totalStock ?? '0',
+            dataIndex: 'totalStock',
+            key: 'totalStock',
+            render: (totalStock) => totalStock ?? '0',
         },
         {
             title: 'Đơn vị',
@@ -120,17 +143,6 @@ const TableComponent = ({ data, isActionEdit }) => {
         setIsModalOpen(true);
     };
 
-    const handleSave = () => {
-        form.validateFields()
-            .then((values) => {
-                dispatch(updateProduct({ id: currentProduct.id, ...values }));
-                setIsModalOpen(false);
-            })
-            .catch((error) => {
-                console.error('Validation failed:', error);
-            });
-    };
-
     const handleDelete = async (id) => {
         try {
             console.log('Delete product:', id);
@@ -142,15 +154,12 @@ const TableComponent = ({ data, isActionEdit }) => {
             console.error('Error deleting product:', error);
         }
     };
-
     const onFinish = async (values) => {
         try {
             if (currentProduct) {
                 const updatedProduct = await Productservice.updateProduct(currentProduct._id, values);
                 console.log(updatedProduct);
-
                 dispatch(updateProduct(updatedProduct.ingredient));
-
                 form.resetFields();
                 setIsModalOpen(false);
                 setCurrentProduct(null);

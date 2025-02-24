@@ -40,7 +40,34 @@ export const updateProduct = async (id, data) => {
 export const getAllIngredient = async () => {
     try {
         const res = await axiosInstance.get(`/ingredient`);
-        return res;
+        return res.data;
+    } catch (error) {
+        throw new Error('L��i khi lấy dữ liệu đơn hàng');
+    }
+};
+
+export const getAllIngredientV1 = async () => {
+    try {
+        const res = await axiosInstance.get(`/inventor`);
+        return res.data;
+    } catch (error) {
+        throw new Error('L��i khi lấy dữ liệu đơn hàng');
+    }
+};
+
+export const getAllSupplier = async () => {
+    try {
+        const res = await axiosInstance.get(`/supplier`);
+        return res.data.suppliers;
+    } catch (error) {
+        throw new Error('L��i khi lấy dữ liệu đơn hàng');
+    }
+};
+
+export const getAllCategory = async () => {
+    try {
+        const res = await axiosInstance.get(`/category`);
+        return res.data.categories;
     } catch (error) {
         throw new Error('L��i khi lấy dữ liệu đơn hàng');
     }

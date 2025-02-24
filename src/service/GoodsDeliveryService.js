@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { axiosJWT } from '.';
 
 // Tạo instance của axios với URL từ biến môi trường
 const axiosInstance = axios.create({
@@ -8,7 +9,7 @@ const axiosInstance = axios.create({
 // lấy danh sách phiếu nhâp
 export const fetchGoodsDeliveries = async () => {
     try {
-        const res = await axiosInstance.get(`good/getAll`);
+        const res = await axiosJWT.get(`good/getAll`);
         return res.data;
     } catch (error) {
         console.error('Error creating order:', error.response || error.message || error);
@@ -17,7 +18,7 @@ export const fetchGoodsDeliveries = async () => {
 };
 export const update = async (id, data) => {
     try {
-        const res = await axiosInstance.put(`good/${id}`, data);
+        const res = await axiosJWT.put(`good/${id}`, data);
         return res.data;
     } catch (error) {
         console.error('Error creating order:', error.response || error.message || error);

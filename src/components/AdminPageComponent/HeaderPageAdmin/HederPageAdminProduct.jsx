@@ -16,13 +16,14 @@ import {
 import { logout } from '../../../redux/slides/UserSlideV1';
 import * as UserService from '../../../service/Userservice';
 import { useNavigate } from 'react-router-dom';
+import Notification from '../../NotificationComponent/Notification';
 function HeaderPageAdminProduct({ onSelectProduct }) {
     const dispatch = useDispatch();
     const handleDelete = () => {
         // delete all products
         dispatch(deleteAllProducts());
     };
-
+    const user = useSelector((state) => state.userv1);
     const items = [
         {
             key: '1',
@@ -48,14 +49,16 @@ function HeaderPageAdminProduct({ onSelectProduct }) {
     const handleMenuClick = async (label) => {
         if (label === 'Đăng xuất') {
             try {
-                await UserService.logoutUser(); // Gọi API logout trước
-                dispatch(logout()); // Xóa dữ liệu user trong Redux
+                await UserService.logoutUser();
+                dispatch(logout());
                 message.success('Đăng xuất thành công!');
-                navigate('/sign-in'); // Điều hướng về trang đăng nhập
+                navigate('/sign-in');
             } catch (error) {
                 message.error('Đăng xuất thất bại!');
                 console.error('Lỗi khi đăng xuất:', error);
             }
+        } else if (label === 'Thiết lập tài khoản') {
+            navigate('/profile_page');
         }
     };
 
@@ -72,12 +75,13 @@ function HeaderPageAdminProduct({ onSelectProduct }) {
                 <div className={styles.wrapperItem}>
                     <MoonOutlined />
                 </div>
+
                 <div className={styles.wrapperItem}>
-                    <BellOutlined />
+                    <Notification></Notification>
                 </div>
                 <Dropdown menu={{ items }} placement="bottomLeft">
                     <div className={styles.wrapperItem}>
-                        <UserOutlined />
+                        {user.length > 0 ? <UserOutlined /> : <img className={styles.avatar} src={user.avatar}></img>}
                     </div>
                 </Dropdown>
             </div>

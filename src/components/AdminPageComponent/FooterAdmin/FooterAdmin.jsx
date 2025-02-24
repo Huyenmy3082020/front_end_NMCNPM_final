@@ -8,7 +8,6 @@ import { setOrder } from '../../../redux/slides/OrderSlide';
 function FooterAdmin({ selectedProduct, isActionImport, setIsActionImport, deliveryAddress, setDeliveryAddress }) {
     const [calculatedTotalPrice, setCalculatedTotalPrice] = useState(0);
 
-    // Hàm cập nhật tổng tiền
     const handleTotalPrice = (price) => {
         setCalculatedTotalPrice(price);
     };

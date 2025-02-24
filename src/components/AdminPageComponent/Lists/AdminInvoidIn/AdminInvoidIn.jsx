@@ -17,27 +17,6 @@ function AdminInvoidIn() {
         }
     }, [isActionImport]);
 
-    const handleUpdateQuantity = (id, value) => {
-        setSelectedProduct((prev) =>
-            prev.map((product) => (product._id === id ? { ...product, quantity: value } : product)),
-        );
-    };
-
-    const handleSelectProduct = (product) => {
-        setSelectedProduct((prev) => {
-            const isExist = prev.some((item) => item._id === product._id);
-            if (!isExist) {
-                const newProducts = [...prev, { ...product, quantity: 1 }];
-
-                return newProducts;
-            }
-            return prev;
-        });
-    };
-
-    const handleAlo = async () => {
-        setSelectedProduct([]);
-    };
     return (
         <div>
             <HeaderPageAdminProduct />

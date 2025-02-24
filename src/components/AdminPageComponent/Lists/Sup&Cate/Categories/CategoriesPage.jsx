@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import TableComponent from '../../../TableComponent/TableComponent';
-import TableUser from './TableUser';
-import * as Usersevice from '../../../../service/Userservice';
-import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct';
-function AdminUser() {
-    const [user, setUser] = useState([]);
+
+import * as ProductService from '../../../../../service/Productservice';
+import HeaderPageAdminProduct from '../../../HeaderPageAdmin/HederPageAdminProduct';
+import TableCategories from '../Categories/TableCategories';
+function Categories() {
+    const [categories, setCategories] = useState([]);
     useEffect(() => {
         const fetchProductAll = async () => {
             try {
-                const res = await Usersevice.getAllUser();
+                const res = await ProductService.getAllCategory();
 
-                setUser(res.data || []);
+                console.log(res);
+                setCategories(res);
             } catch (error) {
                 console.error('Error fetching products:', error);
             } finally {
@@ -21,17 +20,17 @@ function AdminUser() {
 
         fetchProductAll();
     }, []);
-
+    console.log(categories);
     return (
         <div>
             <HeaderPageAdminProduct></HeaderPageAdminProduct>
             <div style={{ backgroundColor: '#f4f4f4', paddingLeft: '16px', paddingTop: '16px' }}>
                 <h1 style={{ fontSize: '2.6rem' }}>Thông tin người dùng</h1>
 
-                <TableUser data={user}></TableUser>
+                <TableCategories data={categories}></TableCategories>
             </div>
         </div>
     );
 }
 
-export default AdminUser;
+export default Categories;

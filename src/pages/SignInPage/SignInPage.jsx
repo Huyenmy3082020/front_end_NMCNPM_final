@@ -15,6 +15,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Userservice from '../../service/Userservice';
 import { useNavigate } from 'react-router-dom';
 import { axiosJWT } from '../../service';
+import * as Productservice from '../../service/Productservice';
+import { addProductAll, addProductv1 } from '../../redux/slides/ProductSlide';
 function SignInPage() {
     const [email, setEmmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,110 +33,19 @@ function SignInPage() {
     const navigate = useNavigate();
     const handleSubmit = async () => {
         try {
-            console.log('🚀 Đang gửi yêu cầu đăng nhập...');
-
-            await UserService.loginUser({ email, password });
-
-            console.log('✅ Đăng nhập thành công, đang lấy thông tin người dùng...');
+            const dataLogin = await UserService.loginUser({ email, password });
+            const token = dataLogin.access_token;
+            console.log(token);
+            localStorage.setItem('access_token', token);
             const res = await getDetailUser();
-
-            console.log('📌 Dữ liệu người dùng nhận được:', res);
             dispatch(updateUser(res));
             navigate('/');
-        } catch (error) {
-            console.error('❌ Lỗi trong quá trình đăng nhập:', error);
 
-            if (error.response) {
-                // 🔥 Lỗi từ server (4xx, 5xx)
-                console.error('📌 Phản hồi từ server:', error.response.data);
-                console.error('📌 Mã trạng thái:', error.response.status);
-                console.error('📌 Headers:', error.response.headers);
-                message.error(error.response.data.message || 'Có lỗi xảy ra từ server');
-            } else if (error.request) {
-                // 🔥 Request đã gửi nhưng không có phản hồi
-                console.error('📌 Không có phản hồi từ server:', error.request);
-                message.error('Không thể kết nối đến server. Vui lòng thử lại!');
-            } else {
-                // 🔥 Lỗi xảy ra trước khi gửi request (cấu hình sai, mất mạng...)
-                console.error('📌 Lỗi trong quá trình thiết lập request:', error.message);
-                message.error('Lỗi hệ thống: ' + error.message);
-            }
-        }
+            const ress = await Productservice.getAllIngredientV1();
+            console.log(ress.data);
+            dispatch(addProductAll(ress.data));
+        } catch (error) {}
     };
-    const handleDecoded = () => {
-        const storageData = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('access_token='))
-            ?.split('=')[1]; // Lấy access_token từ cookie
-        let decode = {};
-        if (storageData) {
-            try {
-                decode = jwtDecode(storageData);
-            } catch (error) {
-                console.error('Error decoding token:', error);
-            }
-        }
-        return { decode, storageData };
-    };
-
-    const refreshAccessToken = async () => {
-        try {
-            const { data } = await Userservice.refreshToken();
-            if (data?.access_token) {
-                console.log('data.access_token', data.access_token);
-
-                // Lưu token mới vào cookie thay vì localStorage
-                document.cookie = `access_token=${data.access_token}; path=/;`;
-
-                return data.access_token;
-            }
-        } catch (error) {
-            console.error('Error refreshing access token:', error);
-        }
-        return null;
-    };
-
-    axiosJWT.interceptors.request.use(
-        async (config) => {
-            try {
-                const currentTime = Math.floor(new Date().getTime() / 1000); // Convert to seconds
-                const { decode, storageData } = handleDecoded();
-
-                if (decode?.exp && decode?.exp < currentTime) {
-                    // Nếu token hết hạn, tự động refresh token
-                    const newToken = await refreshAccessToken();
-                    if (newToken) {
-                        // Cập nhật lại headers với token mới
-                        config.headers['authorization'] = `Bearer ${newToken}`;
-                    } else {
-                        dispatch(logout());
-                        console.error('Failed to refresh token. No access_token returned.');
-                    }
-                } else {
-                    // Lấy token từ cookie
-                    const tokenFromCookie = document.cookie
-                        .split('; ')
-                        .find((row) => row.startsWith('access_token='))
-                        ?.split('=')[1];
-
-                    if (tokenFromCookie) {
-                        config.headers['authorization'] = `Bearer ${tokenFromCookie}`;
-                    } else {
-                        console.error('No token found in cookie.');
-                    }
-                }
-
-                return config;
-            } catch (error) {
-                console.error('Error in request interceptor:', error);
-                return Promise.reject(error);
-            }
-        },
-        (error) => {
-            console.error('Request error:', error);
-            return Promise.reject(error);
-        },
-    );
 
     return (
         <div className={styles.wrapper}>

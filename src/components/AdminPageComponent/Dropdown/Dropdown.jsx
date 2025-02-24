@@ -3,7 +3,15 @@ import { Button, Dropdown, Space, message } from 'antd';
 import * as OrderService from '../../../service/OrderService';
 import { formatVND } from '../../../ultil/index';
 import { useDispatch, useSelector } from 'react-redux';
-
+import * as InventoryService from '../../../service/InventoryService.js';
+import {
+    decreaseProductQuantity,
+    decreaseStock,
+    increaseStock,
+    updateProduct,
+    updateProductStatus,
+    updateProductStock,
+} from '../../../redux/slides/ProductSlide.js';
 const DropdownPage = ({
     selectedProduct,
     handleTotalPrice,
@@ -21,7 +29,10 @@ const DropdownPage = ({
         handleTotalPrice(total);
     }, [selectedProduct]);
 
-    console.log(selectedProduct);
+    selectedProduct.map((product) => console.log(product._id));
+
+    const dispatch = useDispatch();
+
     const handleMenuClick = async (label) => {
         if (!selectedProduct || selectedProduct.length === 0) {
             message.warning('Vui lòng chọn ít nhất một sản phẩm!');
@@ -32,23 +43,29 @@ const DropdownPage = ({
             userId: user._id,
             items: selectedProduct.map((product) => ({
                 ingredientsId: product._id,
-                ingredientNameAtPurchase: product.name || 'Không xác định', // 🔹 Bổ sung tên nguyên liệu
+                ingredientNameAtPurchase: product.name || 'Không xác định',
                 quantity: product.quantity || 1,
-                priceAtPurchase: product.price || 0, // 🔹 Đảm bảo có giá
+                priceAtPurchase: product.price || 0,
                 status: 'pending',
             })),
-            deliveryAddress: deliveryAddress,
+            deliveryAddress,
             totalPrice: selectedProduct.reduce(
                 (acc, product) => acc + (product.quantity || 1) * (product.price || 0),
                 0,
             ),
         };
-
+        console.log(data);
         if (label === 'Nhập hàng') {
             message.info('Đang nhập hàng...');
             try {
-                await OrderService.createOrder(data);
+                const res = await OrderService.createOrder(data);
                 message.success('Nhập hàng thành công!');
+
+                selectedProduct.map((product) => {
+                    dispatch(increaseStock(product));
+                    dispatch(updateProductStatus(product));
+                });
+
                 setDeliveryAddress('');
                 setIsActionImport(true);
             } catch (error) {
@@ -57,18 +74,16 @@ const DropdownPage = ({
         } else if (label === 'Gửi hàng') {
             message.info('Đang gửi hàng...');
             try {
-                console.log(data);
                 await OrderService.Export(data);
                 message.success('Gửi hàng thành công!');
+                selectedProduct.map((product) => {
+                    dispatch(decreaseStock(product));
+                    dispatch(updateProductStatus(product));
+                });
+
                 setDeliveryAddress('');
                 setIsActionImport(true);
-            } catch (error) {
-                console.error('Lỗi khi gửi hàng:', error); // In toàn bộ lỗi ra console
-
-                // Kiểm tra lỗi từ server trả về
-                const errorMessage = error?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại!';
-                message.error(errorMessage);
-            }
+            } catch (error) {}
         }
     };
 

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import {
+    AppstoreOutlined,
     BankOutlined,
     CloudDownloadOutlined,
     CloudUploadOutlined,
     DashboardFilled,
     DashboardOutlined,
-    LogoutOutlined,
     OrderedListOutlined,
     ProductOutlined,
     ShopOutlined,
     SwapOutlined,
+    TagsOutlined,
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import AdminProduct from '../AdminPageComponent/Lists/AdminProduct/AdminProduct';
-import AdminUser from '../AdminPageComponent/Lists/AdminUser/AdminUser';
 import styles from './AdminPage.module.scss';
 import DashboardPage from '../../components/AdminPageComponent/Main/DashboardPage';
 import AdminOrder from './Lists/AdminOrder/AdminOrder';
@@ -25,17 +25,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import UserService from '../../../src/service/Userservice';
 import { logout } from '../../redux/slides/UserSlideV1';
 import { IconDashboard } from '../IconComponent/IconComponent';
+import Categories from './Lists/Sup&Cate/Categories/CategoriesPage';
+import Suppliers from './Lists/Sup&Cate/Supplier/SupplierPage';
 const items = [
     {
         key: 'dashboard',
         label: 'Dashboard',
         icon: <DashboardOutlined />,
     },
-    {
-        key: 'user',
-        label: 'User',
-        icon: <UserOutlined />,
-    },
+
     {
         key: 'product',
         label: 'Product',
@@ -63,12 +61,26 @@ const items = [
             },
         ],
     },
+    {
+        key: '',
+        label: 'Categories & Suppliers',
+        icon: <AppstoreOutlined />,
+        children: [
+            {
+                key: 'Suppliers',
+                label: 'Suppliers',
+                icon: <TagsOutlined />,
+            },
+            {
+                key: 'Categories',
+                label: 'Categories',
+                icon: <ShopOutlined />,
+            },
+        ],
+    },
 ];
-
 const renderPage = (key) => {
     switch (key) {
-        case 'user':
-            return <AdminUser></AdminUser>;
         case 'product':
             return <AdminProduct></AdminProduct>;
         case 'order':
@@ -79,6 +91,10 @@ const renderPage = (key) => {
             return <AdminInvoidIn></AdminInvoidIn>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
+        case 'Suppliers':
+            return <Suppliers></Suppliers>;
+        case 'Categories':
+            return <Categories></Categories>;
         default: {
             return <></>;
         }

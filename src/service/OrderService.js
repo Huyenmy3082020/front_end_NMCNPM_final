@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';
 
 // Tạo instance của axios với URL từ biến môi trường
@@ -10,17 +11,17 @@ export const createOrder = async (data) => {
         const res = await axiosInstance.post(`good`, data);
         return res.data;
     } catch (error) {
-        console.error('Error creating order:', error.response || error.message || error);
+        console.error('Error creating order:', error.data || error.message || error);
         throw new Error('Failed to create order');
     }
 };
 export const Export = async (data) => {
     try {
-        const res = await axiosInstance.post(`shipment`, data);
+        const res = await axiosInstance.post(`shipment/redis`, data);
         console.log(res);
         return res.data;
     } catch (error) {
-        console.error('Error creating order:', error.response || error.message || error);
+        message.error(error.response.data.message);
         throw new Error('Failed to create order');
     }
 };

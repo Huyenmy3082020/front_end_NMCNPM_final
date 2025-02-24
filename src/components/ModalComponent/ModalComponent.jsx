@@ -1,32 +1,33 @@
 import React from 'react';
-import { Modal, Form, Input, Button, Select } from 'antd';
+import { Modal, Form, Input, Button, Select, message } from 'antd';
 import * as ProductService from '../../service/Productservice';
 import { useDispatch } from 'react-redux';
-import { addProduct, upsertProduct } from '../../redux/slides/ProductSlide';
+import { addProduct, addProductAll, addProductv1, upsertProduct } from '../../redux/slides/ProductSlide';
 
 const ModalComponent = ({
     isModalOpen,
-    products,
     handleCancel,
     onFinish,
     onFinishFailed,
     categories,
     suppliers,
-    onSuccess,
+    setProducts,
 }) => {
     const [form] = Form.useForm();
 
-    console.log(products);
     const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         onFinish(values);
         form.resetFields();
         try {
             const res = await ProductService.createProduct(values);
-            onSuccess(res.ingredient);
-            dispatch(addProduct(products));
+            console.log(res.ingredient);
+            dispatch(addProduct(res.ingredient));
+            message.success('Tạo sản phẩm thành công');
         } catch (err) {
-            console.log(err);
+            if (err.status === 401) {
+                message.error('Bạn không có quyền tạo mới sản phẩm');
+            }
         }
     };
     const unitOptions = ['ml', 'l', 'g', 'kg', 'cái', 'hộp', 'gói', 'chai', 'ly'];

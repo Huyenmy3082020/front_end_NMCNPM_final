@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Table, InputNumber, Button, message } from 'antd';
 import { update } from '../../../../../service/GoodsDeliveryService';
-
+import { useDispatch } from 'react-redux';
+import { updateProduct, updateProductStock } from '../../../../../redux/slides/ProductSlide';
+import * as InventoryService from '../../../../../service/InventoryService.js';
 const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModalVisible }) => {
     const [quantities, setQuantities] = useState({});
 
@@ -32,7 +34,6 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
         quantity: quantities[item._id] || item.quantity, // Sử dụng giá trị từ `quantities`
     }));
 
-    // 🔹 Tính tổng tiền dựa trên số lượng cập nhật
     const totalPrice = dataSource.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const dataUpdate = {
@@ -44,11 +45,17 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
             ingredientsId: item.ingredientsId,
         })),
     };
+    const dispatch = useDispatch();
 
-    console.log(dataSource);
+    console.log(selectedDelivery);
     const handleUpdate = async () => {
         try {
-            await update(selectedDelivery._id, dataUpdate);
+            const a = await update(selectedDelivery._id, dataUpdate);
+            console.log(a.data.items);
+            a.data.items.forEach((product) => {
+                dispatch(updateProductStock(product));
+            });
+
             setIsModalVisible(false);
             message.success('Cập nhật thành công!');
         } catch (error) {

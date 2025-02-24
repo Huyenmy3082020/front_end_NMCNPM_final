@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Table } from 'antd';
+import { Button, Input, Modal, Table } from 'antd';
 import { fetchGoodsDeliveries } from '../../../../service/GoodsDeliveryService';
 import { generateDisplayId } from '../../../../ultil';
-import { FolderViewOutlined } from '@ant-design/icons';
+import { FolderViewOutlined, SearchOutlined } from '@ant-design/icons';
 import GoodsDeliveryTableV1 from './Update/GoodDeliveryTableV1';
 
 const GoodsDeliveryTable = () => {
@@ -22,7 +22,7 @@ const GoodsDeliveryTable = () => {
                     deliveryDate: delivery.deliveryDate,
                     items: delivery.items.map((item) => ({
                         _id: item._id,
-                        ingredientName: item.ingredientsId?.name || 'Unknown', // ✅ Đảm bảo có tên nguyên liệu
+                        ingredientName: item.ingredientsId?.name || 'Unknown',
                         price: item.priceAtPurchase,
                         quantity: item.quantity,
                         ingredientsId: item.ingredientsId?._id || null, // ✅ Thêm ingredientsId
@@ -46,16 +46,44 @@ const GoodsDeliveryTable = () => {
         setSelectedDelivery(record);
         setIsModalVisible(true);
     };
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    placeholder={`Tìm kiếm...`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => confirm()}
+                    style={{ marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    type="primary"
+                    onClick={() => confirm()}
+                    icon={<SearchOutlined />}
+                    size="small"
+                    style={{ width: 90, marginRight: 8 }}
+                >
+                    Tìm
+                </Button>
+                <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
+                    Xóa
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+        onFilter: (value, record) => record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+    });
+    console.log(data);
 
     const columns = [
-        { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id' },
+        { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id', ...getColumnSearchProps('_id') },
         { title: 'User Email', dataIndex: 'userEmail', key: 'userEmail' },
-        { title: 'User Phone', dataIndex: 'userPhone', key: 'userPhone' },
         {
             title: 'Ngày nhập hàng',
             dataIndex: 'deliveryDate',
             key: 'deliveryDate',
             render: (text) => new Date(text).toLocaleString(),
+            sorter: (a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate),
         },
         {
             title: 'Actions',
