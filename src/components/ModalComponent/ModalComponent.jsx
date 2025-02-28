@@ -18,9 +18,11 @@ const ModalComponent = ({
     const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         onFinish(values);
+        console.log(values);
         form.resetFields();
         try {
             const res = await ProductService.createProduct(values);
+            console.log(res);
             console.log(res.ingredient);
             dispatch(addProduct(res.ingredient));
             message.success('Tạo sản phẩm thành công');
@@ -60,19 +62,6 @@ const ModalComponent = ({
                         {categories.map((category) => (
                             <Select.Option key={category._id} value={category.name}>
                                 {category.name}
-                            </Select.Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    label="Nhà cung cấp"
-                    name="supplier"
-                    rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp!' }]}
-                >
-                    <Select placeholder="Chọn nhà cung cấp">
-                        {suppliers.map((supplier) => (
-                            <Select.Option key={supplier._id} value={supplier.name}>
-                                {supplier.name}
                             </Select.Option>
                         ))}
                     </Select>

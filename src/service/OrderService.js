@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import axios from 'axios';
+import { axiosJWT } from '.';
 
 // Tạo instance của axios với URL từ biến môi trường
 const axiosInstance = axios.create({
@@ -8,7 +9,7 @@ const axiosInstance = axios.create({
 
 export const createOrder = async (data) => {
     try {
-        const res = await axiosInstance.post(`good`, data);
+        const res = await axiosJWT.post(`good`, data);
         return res.data;
     } catch (error) {
         console.error('Error creating order:', error.data || error.message || error);
@@ -17,7 +18,7 @@ export const createOrder = async (data) => {
 };
 export const Export = async (data) => {
     try {
-        const res = await axiosInstance.post(`shipment/redis`, data);
+        const res = await axiosJWT.post(`shipment/redis`, data);
         console.log(res);
         return res.data;
     } catch (error) {

@@ -75,13 +75,23 @@ const TableComponent = ({ data, isActionEdit }) => {
             dataIndex: 'statusList',
             key: 'statusList',
             render: (statusList) => {
-                const isOutOfStock = statusList.includes('out-of-stock');
+                if (!statusList || statusList.length === 0 || statusList.includes('Không có dữ liệu')) {
+                    return (
+                        <Tooltip title="Không có dữ liệu">
+                            <Tag color="gray">Không có dữ liệu</Tag>
+                        </Tooltip>
+                    );
+                }
 
-                return isOutOfStock ? (
-                    <Tooltip title="Hết hàng">
-                        <Tag color="red">Out-stock</Tag>
-                    </Tooltip>
-                ) : (
+                if (statusList.includes('out-of-stock')) {
+                    return (
+                        <Tooltip title="Hết hàng">
+                            <Tag color="red">Out-stock</Tag>
+                        </Tooltip>
+                    );
+                }
+
+                return (
                     <Tooltip title="Còn hàng">
                         <Tag color="green">In-stock</Tag>
                     </Tooltip>

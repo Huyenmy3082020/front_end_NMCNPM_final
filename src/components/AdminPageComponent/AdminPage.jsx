@@ -27,53 +27,54 @@ import { logout } from '../../redux/slides/UserSlideV1';
 import { IconDashboard } from '../IconComponent/IconComponent';
 import Categories from './Lists/Sup&Cate/Categories/CategoriesPage';
 import Suppliers from './Lists/Sup&Cate/Supplier/SupplierPage';
+import AdminInvoidOut from './Lists/AdminInvoidOut/AdminInvoidOut';
 const items = [
     {
         key: 'dashboard',
-        label: 'Dashboard',
+        label: 'Trang chủ',
         icon: <DashboardOutlined />,
     },
 
     {
         key: 'product',
-        label: 'Product',
+        label: 'Sản phẩm',
         icon: <ProductOutlined></ProductOutlined>,
     },
     {
         key: 'order',
-        label: 'Warehousing and Exporting',
+        label: 'Xuất & nhập hàng',
         icon: <SwapOutlined />,
     },
     {
         key: 'invoice',
-        label: 'Invoice',
+        label: 'Danh sách xuất nhập hàng',
         icon: <ShopOutlined />,
         children: [
             {
                 key: 'invoid-in',
-                label: 'Invoid-in',
+                label: 'Danh sách nhập',
                 icon: <CloudDownloadOutlined />,
             },
             {
                 key: 'invoid-out',
-                label: 'Invoid-out',
+                label: 'Danh sách xuất',
                 icon: <CloudUploadOutlined />,
             },
         ],
     },
     {
         key: '',
-        label: 'Categories & Suppliers',
+        label: 'Danh mục & Nhà cung cấp',
         icon: <AppstoreOutlined />,
         children: [
             {
                 key: 'Suppliers',
-                label: 'Suppliers',
+                label: 'Nhà cung cấp',
                 icon: <TagsOutlined />,
             },
             {
                 key: 'Categories',
-                label: 'Categories',
+                label: 'Danh mục',
                 icon: <ShopOutlined />,
             },
         ],
@@ -88,7 +89,7 @@ const renderPage = (key) => {
         case 'invoid-in':
             return <AdminInvoidIn></AdminInvoidIn>;
         case 'invoid-out':
-            return <AdminInvoidIn></AdminInvoidIn>;
+            return <AdminInvoidOut></AdminInvoidOut>;
         case 'dashboard':
             return <DashboardPage></DashboardPage>;
         case 'Suppliers':

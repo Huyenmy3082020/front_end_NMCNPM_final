@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Input, Modal, Table } from 'antd';
+import { Button, Input, Modal, Table, Tag } from 'antd';
 import { fetchGoodsDeliveries } from '../../../../service/GoodsDeliveryService';
-import { generateDisplayId } from '../../../../ultil';
+import { formatDateTime, generateDisplayId } from '../../../../ultil';
 import { FolderViewOutlined, SearchOutlined } from '@ant-design/icons';
 import GoodsDeliveryTableV1 from './Update/GoodDeliveryTableV1';
 
@@ -15,10 +15,10 @@ const GoodsDeliveryTable = () => {
         const fetchData = async () => {
             try {
                 const goods = await fetchGoodsDeliveries();
+                console.log('Fetched goods deliveries:', goods);
                 const enrichedData = goods.map((delivery) => ({
                     _id: delivery._id,
-                    userEmail: delivery.userId?.email,
-                    userPhone: delivery.userId?.phone,
+
                     deliveryDate: delivery.deliveryDate,
                     items: delivery.items.map((item) => ({
                         _id: item._id,
@@ -27,6 +27,8 @@ const GoodsDeliveryTable = () => {
                         quantity: item.quantity,
                         ingredientsId: item.ingredientsId?._id || null, // ✅ Thêm ingredientsId
                     })),
+                    supplierId: delivery.supplierId,
+                    status: 'CREATED',
                 }));
 
                 console.log(goods);
@@ -77,20 +79,44 @@ const GoodsDeliveryTable = () => {
 
     const columns = [
         { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id', ...getColumnSearchProps('_id') },
-        { title: 'User Email', dataIndex: 'userEmail', key: 'userEmail' },
+
         {
             title: 'Ngày nhập hàng',
             dataIndex: 'deliveryDate',
             key: 'deliveryDate',
-            render: (text) => new Date(text).toLocaleString(),
+            render: (text) => formatDateTime(text),
             sorter: (a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate),
         },
+        {
+            title: 'Nhà cung cấp',
+            dataIndex: 'supplierId',
+            key: 'supplierId',
+            render: (supplierId) => supplierId.name,
+        },
+
+        {
+            title: 'Trạng Thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => {
+                let color =
+                    status === 'Pending'
+                        ? 'orange'
+                        : status === 'SHIPPED'
+                        ? 'green'
+                        : status === 'CREATED'
+                        ? 'green'
+                        : 'default';
+                return <Tag color={color}>{status.toUpperCase()}</Tag>;
+            },
+        },
+
         {
             title: 'Actions',
             key: 'actions',
             render: (_, record) => (
                 <Button icon={<FolderViewOutlined />} onClick={() => handleView(record)} style={{ marginRight: 8 }}>
-                    View
+                    Xem chi tiết
                 </Button>
             ),
         },

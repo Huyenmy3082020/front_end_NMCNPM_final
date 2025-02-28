@@ -9,20 +9,20 @@ const API_URL = 'http://localhost:2001/notification';
 const Notification = () => {
     const [notifications, setNotifications] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchNotifications = async () => {
-    //         try {
-    //             const response = await fetch(API_URL);
-    //             const data = await response.json();
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
 
-    //             setNotifications(data.notifications); // Cập nhật state với dữ liệu từ API
-    //         } catch (error) {
-    //             console.error('Lỗi khi lấy dữ liệu từ API:', error);
-    //         }
-    //     };
+                setNotifications(data.notifications); // Cập nhật state với dữ liệu từ API
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu từ API:', error);
+            }
+        };
 
-    //     fetchNotifications(); // Gọi hàm fetch
-    // }, []);
+        fetchNotifications(); // Gọi hàm fetch
+    }, []);
 
     const user = useSelector((state) => state.userv1);
     const content = (
@@ -33,10 +33,7 @@ const Notification = () => {
                         <div className={styles.wrapperItem}>
                             <img src={user.avatar} className={styles.wrapperItemImg}></img>
                             <div>
-                                <p className={styles.wrapperinfo}>
-                                    {notification.message} {notification.name}
-                                </p>{' '}
-                                {notification.createdAt}
+                                <p className={styles.wrapperinfo}>Sản phẩm {notification.name} sắp hết</p>{' '}
                             </div>
                         </div>
                     </li>

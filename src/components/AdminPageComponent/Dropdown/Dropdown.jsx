@@ -13,6 +13,7 @@ import {
     updateProductStock,
 } from '../../../redux/slides/ProductSlide.js';
 const DropdownPage = ({
+    selectedsupplier,
     selectedProduct,
     handleTotalPrice,
     isActionImport,
@@ -23,6 +24,7 @@ const DropdownPage = ({
     const [totalPrice, setTotalPrice] = useState(0);
     const user = useSelector((state) => state.userv1);
 
+    console.log(selectedProduct);
     useEffect(() => {
         let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
         setTotalPrice(formatVND(total));
@@ -38,7 +40,6 @@ const DropdownPage = ({
             message.warning('Vui lòng chọn ít nhất một sản phẩm!');
             return;
         }
-
         const data = {
             userId: user._id,
             items: selectedProduct.map((product) => ({
@@ -48,27 +49,34 @@ const DropdownPage = ({
                 priceAtPurchase: product.price || 0,
                 status: 'pending',
             })),
+            supplierName: selectedsupplier,
             deliveryAddress,
             totalPrice: selectedProduct.reduce(
                 (acc, product) => acc + (product.quantity || 1) * (product.price || 0),
                 0,
             ),
         };
-        console.log(data);
         if (label === 'Nhập hàng') {
-            message.info('Đang nhập hàng...');
             try {
-                const res = await OrderService.createOrder(data);
+                console.log(data.supplierName);
+                if (data.supplierName === '') {
+                    message.error('Vui lòng chọn nhà cung cấp!');
+                    return;
+                }
+                await OrderService.createOrder(data);
                 message.success('Nhập hàng thành công!');
 
-                selectedProduct.map((product) => {
-                    dispatch(increaseStock(product));
-                    dispatch(updateProductStatus(product));
-                });
+                if (selectedProduct && selectedProduct.length > 0) {
+                    selectedProduct.forEach((product) => {
+                        dispatch(increaseStock(product));
+                        dispatch(updateProductStatus(product));
+                    });
+                }
 
                 setDeliveryAddress('');
                 setIsActionImport(true);
             } catch (error) {
+                console.error('Lỗi tạo đơn hàng:', error);
                 message.error('Tạo đơn hàng thất bại');
             }
         } else if (label === 'Gửi hàng') {

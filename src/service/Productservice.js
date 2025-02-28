@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
 });
 
 export const createProduct = async (data) => {
-    const res = await axiosJWT.post(`ingredient`, data);
+    const res = await axiosJWT.post(`ingredient/elasticsearch`, data);
     return res.data;
 };
 
@@ -68,6 +68,15 @@ export const getAllCategory = async () => {
     try {
         const res = await axiosInstance.get(`/category`);
         return res.data.categories;
+    } catch (error) {
+        throw new Error('L��i khi lấy dữ liệu đơn hàng');
+    }
+};
+
+export const searchElastic = async (searchQuery) => {
+    try {
+        const res = await axiosInstance.get(`ingredient/search?searchQuery=${searchQuery.querySearch}`);
+        return res;
     } catch (error) {
         throw new Error('L��i khi lấy dữ liệu đơn hàng');
     }

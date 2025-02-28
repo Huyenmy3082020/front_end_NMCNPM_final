@@ -15,7 +15,8 @@ function AdminProduct() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch();
     const products = useSelector((state) => state.product.products);
-    console.log(products);
+    const [searchProduct, setSearchProduct] = useState([]);
+
     useEffect(() => {
         console.log('Updated products from Redux:', products);
     }, [products]);
@@ -53,21 +54,11 @@ function AdminProduct() {
         fetchCategories();
     }, []);
 
-    useEffect(() => {
-        const fetchSuppliers = async () => {
-            try {
-                const res = await CategoryService.getAllSupplies();
-                setSuppliers(res.suppliers);
-            } catch (error) {
-                console.error('Error fetching suppliers:', error);
-            }
-        };
-        fetchSuppliers();
-    }, []);
+    console.log(searchProduct);
 
     return (
         <div>
-            <HeaderPageAdminProduct />
+            <HeaderPageAdminProduct setsearchProduct={setSearchProduct} />
             <div style={{ backgroundColor: '#f4f4f4' }}>
                 <h1 style={{ fontSize: '2.6rem', marginLeft: '16px', paddingTop: '16px' }}>Thông tin sản phẩm</h1>
                 <Button
@@ -82,7 +73,7 @@ function AdminProduct() {
                 >
                     <PlusOutlined style={{ fontSize: '5rem' }} />
                 </Button>
-                <TableComponent loading bordered data={products} />
+                <TableComponent loading bordered data={searchProduct.length > 0 ? searchProduct : products} />
 
                 <ModalComponent
                     isModalOpen={isModalOpen}

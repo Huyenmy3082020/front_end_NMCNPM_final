@@ -6,7 +6,8 @@ import TableAdminProduct from './TableAdminProduct.jsx';
 import FooterAdmin from '../../FooterAdmin/FooterAdmin.jsx';
 import * as Userservice from '../../../../service/Userservice.js';
 import { logout } from '../../../../redux/slides/UserSlideV1.js';
-
+import { Form, Select } from 'antd';
+import * as CategoryService from '../../../../service/CategoriService.js';
 function AdminOrder() {
     const [selectedProduct, setSelectedProduct] = useState([]);
     const dispatch = useDispatch();
@@ -42,25 +43,42 @@ function AdminOrder() {
         setSelectedProduct([]);
     };
     const [deliveryAddress, setDeliveryAddress] = useState('');
+    const [suppliers, setSuppliers] = useState([]);
+    useEffect(() => {
+        const fetchSuppliers = async () => {
+            try {
+                const res = await CategoryService.getAllSupplies();
+                setSuppliers(res.suppliers);
+            } catch (error) {
+                console.error('Error fetching suppliers:', error);
+            }
+        };
+        fetchSuppliers();
+    }, []);
 
+    const [selectedsupplier, setSelectedSupllier] = useState('');
+    const handleOnChange = (values) => {
+        setSelectedSupllier(values);
+    };
     return (
         <div>
             <HeaderPageAdminProduct />
             <div style={{ padding: '20px', backgroundColor: '#f0f2f5' }}>
                 <div style={{ backgroundColor: '#fff', borderRadius: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
-                        <input
-                            type="text"
-                            value={deliveryAddress}
-                            onChange={(e) => setDeliveryAddress(e.target.value)}
-                            placeholder="Nhập địa chỉ nhập hàng"
-                            style={{
-                                width: '40%',
-                                fontSize: '12px',
-                                borderRadius: '8px',
-                                border: '1px solid #ccc',
-                            }}
-                        />
+                        <Form.Item
+                            label="Nhà cung cấp"
+                            name="supplier"
+                            rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp!' }]}
+                        >
+                            <Select placeholder="Chọn nhà cung cấp" style={{ width: 300 }} onChange={handleOnChange}>
+                                {suppliers.map((supplier) => (
+                                    <Select.Option key={supplier._id} value={supplier.name}>
+                                        {supplier.name}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
 
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
                     </div>
@@ -68,6 +86,7 @@ function AdminOrder() {
                 </div>
             </div>
             <FooterAdmin
+                selectedsupplier={selectedsupplier}
                 selectedProduct={selectedProduct}
                 isActionImport={isActionImport}
                 setIsActionImport={setIsActionImport}

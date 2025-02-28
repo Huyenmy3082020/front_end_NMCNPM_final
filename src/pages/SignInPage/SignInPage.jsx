@@ -40,6 +40,7 @@ function SignInPage() {
             navigate('/');
 
             const ress = await Productservice.getAllIngredientV1();
+            console.log(ress);
             console.log(ress.data);
             dispatch(addProductAll(ress.data));
         } catch (error) {}
