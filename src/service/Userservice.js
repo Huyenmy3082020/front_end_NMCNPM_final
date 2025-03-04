@@ -24,25 +24,25 @@ const isTokenExpired = (token) => {
     }
 };
 console.log(isTokenExpired(accessToken));
-// axiosJWT.interceptors.response.use(
-//     // (response) => response,
-//     // async (error) => {
-//     //     const originalRequest = error.config;
+axiosJWT.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
-//     //     if (isTokenExpired(accessToken)) {
-//     //         console.log('⚠️ Token hết hạn, thực hiện refresh...');
-//     //         try {
-//     //             // await refreshToken();
-//     //             console.log('✅ Token đã được refresh, thử gọi lại request');
-//     //             return axiosJWT(originalRequest); // Retry request với token mới
-//     //         } catch (refreshError) {
-//     //             console.error('❌ Refresh token thất bại, đăng xuất người dùng...');
-//     //             return Promise.reject(refreshError);
-//     //         }
-//     //     }
-//     //     return Promise.reject(error);
-//     // },
-// );
+        if (isTokenExpired(accessToken)) {
+            console.log('⚠️ Token hết hạn, thực hiện refresh...');
+            try {
+                // await refreshToken();
+                console.log('✅ Token đã được refresh, thử gọi lại request');
+                return axiosJWT(originalRequest); // Retry request với token mới
+            } catch (refreshError) {
+                console.error('❌ Refresh token thất bại, đăng xuất người dùng...');
+                return Promise.reject(refreshError);
+            }
+        }
+        return Promise.reject(error);
+    },
+);
 
 export const getDetailUser = async () => {
     try {
@@ -70,7 +70,6 @@ export const refreshToken = async () => {
         throw error;
     }
 };
-// 🔥 API logout
 export const logoutUser = async () => {
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}user/logout`, {}, { withCredentials: true });

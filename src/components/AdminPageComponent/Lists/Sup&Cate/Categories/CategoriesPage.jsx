@@ -10,7 +10,6 @@ function Categories() {
             try {
                 const res = await ProductService.getAllCategory();
 
-                console.log(res);
                 setCategories(res);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -20,7 +19,6 @@ function Categories() {
 
         fetchProductAll();
     }, []);
-    console.log(categories);
     return (
         <div>
             <HeaderPageAdminProduct></HeaderPageAdminProduct>

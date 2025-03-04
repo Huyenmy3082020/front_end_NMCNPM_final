@@ -50,13 +50,9 @@ const TableSupplier = ({ data }) => {
         setSelectedRowKeys(selectedKeys);
     };
 
-    const handleEdit = (supplier) => {
-        console.log('Xem nhà cung cấp:', supplier);
-    };
+    const handleEdit = (supplier) => {};
 
-    const handleDelete = (id) => {
-        console.log('Xóa nhà cung cấp với ID:', id);
-    };
+    const handleDelete = (id) => {};
 
     return (
         <div>

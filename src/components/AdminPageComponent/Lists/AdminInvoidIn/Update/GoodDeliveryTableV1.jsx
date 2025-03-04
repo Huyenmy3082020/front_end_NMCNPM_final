@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Table, InputNumber, Button, message } from 'antd';
 import { update } from '../../../../../service/GoodsDeliveryService';
 import { useDispatch } from 'react-redux';
-import { updateProduct, updateProductStock } from '../../../../../redux/slides/ProductSlide';
-import * as InventoryService from '../../../../../service/InventoryService.js';
-const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModalVisible }) => {
+import {
+    increaseStock,
+    updateProduct,
+    updateProductStatus,
+    updateProductStock,
+} from '../../../../../redux/slides/ProductSlide';
+import * as OrderService from '../../../../../service/OrderService.js';
+// 🔹 Cập nhật state `quantities` khi `selectedDelivery` thay đổi
+const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModalVisible, goodDelivery }) => {
     const [quantities, setQuantities] = useState({});
 
-    // 🔹 Cập nhật state `quantities` khi `selectedDelivery` thay đổi
     useEffect(() => {
         if (selectedDelivery?.items) {
             const initialQuantities = {};
@@ -18,8 +23,6 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
         }
     }, [selectedDelivery]);
 
-    console.log(selectedDelivery);
-    // 🔹 Xử lý cập nhật số lượng từng sản phẩm
     const onUpdateQuantity = (id, value) => {
         setQuantities((prev) => ({
             ...prev,
@@ -47,13 +50,12 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
     };
     const dispatch = useDispatch();
 
-    console.log(selectedDelivery);
     const handleUpdate = async () => {
         try {
             const a = await update(selectedDelivery._id, dataUpdate);
-            console.log(a.data.items);
             a.data.items.forEach((product) => {
                 dispatch(updateProductStock(product));
+                dispatch(updateProductStatus(product));
             });
 
             setIsModalVisible(false);
@@ -104,6 +106,32 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
         },
     ];
 
+    const handleCreated = async () => {
+        try {
+            const orderData = {
+                _id: goodDelivery._id,
+                items: goodDelivery.items.map(({ ingredientsId, quantity }) => ({
+                    ingredientsId,
+                    quantity,
+                })),
+            };
+
+            await OrderService.createOrder(orderData);
+            message.success('Nhập hàng thành công!');
+
+            goodDelivery.items.forEach((product) => {
+                if (product?._id) {
+                    dispatch(increaseStock({ ...product }));
+                    dispatch(updateProductStatus({ ...product }));
+                } else {
+                    console.error('❌ Sản phẩm không hợp lệ khi dispatch:', product);
+                }
+            });
+        } catch (error) {
+            message.error('Tạo đơn hàng thất bại!');
+        }
+    };
+
     return (
         <div>
             <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false} />
@@ -111,9 +139,15 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
                 Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
             </div>
 
-            <Button type="primary" style={{ marginTop: '10px' }} onClick={handleUpdate}>
-                Cập nhật đơn hàng
-            </Button>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button type="primary" style={{ marginTop: '10px' }} onClick={handleUpdate}>
+                    Cập nhật đơn hàng
+                </Button>
+
+                <Button type="primary" style={{ marginTop: '10px' }} onClick={handleCreated}>
+                    Nhập hàng
+                </Button>
+            </div>
         </div>
     );
 };

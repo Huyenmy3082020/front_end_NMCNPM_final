@@ -68,7 +68,6 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
 
     const debouncedSearch = useCallback(
         _.debounce((value) => {
-            console.log('🔍 Searching for:', value);
             fetchSearchResults(value);
         }, 1000),
         [],

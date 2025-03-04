@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import HeaderPageAdminProduct from '../../HeaderPageAdmin/HederPageAdminProduct.jsx';
 import ModalComponent from '../../../ModalComponent/ModalComponent.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct, addProductAll, deleteAllProducts } from '../../../../redux/slides/ProductSlide.js';
 
 function AdminProduct() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,9 +16,7 @@ function AdminProduct() {
     const products = useSelector((state) => state.product.products);
     const [searchProduct, setSearchProduct] = useState([]);
 
-    useEffect(() => {
-        console.log('Updated products from Redux:', products);
-    }, [products]);
+    useEffect(() => {}, [products]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -53,8 +50,6 @@ function AdminProduct() {
         };
         fetchCategories();
     }, []);
-
-    console.log(searchProduct);
 
     return (
         <div>

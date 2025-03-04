@@ -9,7 +9,6 @@ export const productSlice = createSlice({
     initialState,
     reducers: {
         addProduct: (state, action) => {
-            console.log(action.payload);
             const exists = state.products.some((p) => p._id === action.payload._id);
             if (!exists) {
                 state.products.push({
@@ -19,20 +18,12 @@ export const productSlice = createSlice({
             }
         },
         addProductAll: (state, action) => {
-            console.log('Payload received in addProductAll:', action.payload);
             state.products = action.payload; // Giữ nguyên dữ liệu từ payload
         },
         updateProduct: (state, action) => {
-            console.log('🛠 Cập nhật sản phẩm:', action.payload);
-
             state.products = state.products.map((p) =>
                 p._id === action.payload._id ? { ...p, ...action.payload } : p,
             );
-        },
-        updateProductStock: (state, action) => {
-            console.log('🔄 Cập nhật số lượng sản phẩm:', action.payload);
-
-            console.log(state.products);
         },
 
         deleteProduct: (state, action) => {
@@ -42,27 +33,38 @@ export const productSlice = createSlice({
             state.products = [];
         },
         increaseStock: (state, action) => {
-            console.log('increaseStock', action.payload);
+            const product = state.products.find((p) => p._id === action.payload.ingredientsId);
 
-            const product = state.products.find((p) => p._id === action.payload._id);
-
+            console.log('✅ Sản phẩm sau khi cập nhật:', product);
             product.totalStock = (product.totalStock || 0) + action.payload.quantity;
         },
-
         decreaseStock: (state, action) => {
             const product = state.products.find((p) => p._id === action.payload._id);
             if (product && product.totalStock >= action.payload.quantity) {
                 product.totalStock -= action.payload.quantity;
             }
         },
+        updateProductStock: (state, action) => {
+            console.log('🔄 Cập nhật số lượng sản phẩm:', action.payload);
+
+            console.log(state.products);
+        },
         updateProductStatus: (state, action) => {
             console.log('🔄 Cập nhật trạng thái sản phẩm:', action.payload);
 
-            const product = state.products.find((p) => p._id === action.payload._id);
-            if (product) {
-                // Đảm bảo statusList luôn là một mảng
-                product.statusList = [product.totalStock <= 0 ? 'out-of-stock' : 'in-stock'];
+            if (!action.payload || !action.payload._id) {
+                console.error('❌ Lỗi: action.payload không hợp lệ', action.payload);
+                return;
             }
+
+            const product = state.products.find((p) => p._id === action.payload.ingredientsId);
+
+            if (!product) {
+                console.warn('⚠️ Không tìm thấy sản phẩm trong state:', action.payload.ingredientsId);
+                return;
+            }
+
+            product.statusList = [product.totalStock <= 0 ? 'out-of-stock' : 'in-stock'];
         },
     },
 });
@@ -75,7 +77,6 @@ export const {
     addProductAll,
     increaseStock,
     decreaseStock,
-    updateProductStock,
     updateProductStatus,
 } = productSlice.actions;
 

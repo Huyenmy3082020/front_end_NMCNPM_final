@@ -15,7 +15,6 @@ const GoodsDeliveryTable = () => {
         const fetchData = async () => {
             try {
                 const goods = await fetchGoodsDeliveries();
-                console.log('Fetched goods deliveries:', goods);
                 const enrichedData = goods.map((delivery) => ({
                     _id: delivery._id,
 
@@ -25,13 +24,12 @@ const GoodsDeliveryTable = () => {
                         ingredientName: item.ingredientsId?.name || 'Unknown',
                         price: item.priceAtPurchase,
                         quantity: item.quantity,
-                        ingredientsId: item.ingredientsId?._id || null, // ✅ Thêm ingredientsId
+                        ingredientsId: item.ingredientsId?._id || null,
                     })),
                     supplierId: delivery.supplierId,
-                    status: 'CREATED',
+                    status: delivery.status,
                 }));
 
-                console.log(goods);
                 setData(enrichedData);
             } catch (error) {
                 console.error('Error fetching goods deliveries:', error);
@@ -43,10 +41,11 @@ const GoodsDeliveryTable = () => {
         fetchData();
     }, []);
 
+    const [goodDelivery, setGoodDelivery] = useState('');
     const handleView = (record) => {
-        console.log(record);
         setSelectedDelivery(record);
         setIsModalVisible(true);
+        setGoodDelivery(record);
     };
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -75,7 +74,6 @@ const GoodsDeliveryTable = () => {
         filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         onFilter: (value, record) => record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
     });
-    console.log(data);
 
     const columns = [
         { title: 'Phiếu Nhập', dataIndex: '_id', key: '_id', ...getColumnSearchProps('_id') },
@@ -146,6 +144,7 @@ const GoodsDeliveryTable = () => {
             >
                 {selectedDelivery && (
                     <GoodsDeliveryTableV1
+                        goodDelivery={goodDelivery}
                         selectedDelivery={selectedDelivery}
                         setSelectedDelivery={setSelectedDelivery}
                         setIsModalVisible={setIsModalVisible}

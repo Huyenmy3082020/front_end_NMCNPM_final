@@ -16,20 +16,31 @@ export const createOrder = async (data) => {
         throw new Error('Failed to create order');
     }
 };
+export const ExportV1 = async (data) => {
+    try {
+        const res = await axiosJWT.post(`good/v1`, data);
+        console.log(res);
+        return res.data;
+    } catch (error) {
+        message.error(error.response.data.message);
+        console.error(error.response.data.message);
+        throw new Error('Failed to create order');
+    }
+};
 export const Export = async (data) => {
     try {
         const res = await axiosJWT.post(`shipment/redis`, data);
         console.log(res);
         return res.data;
     } catch (error) {
-        message.error(error.response.data.message);
+        message.error(error.response.data.message || error.response.data.mess);
         throw new Error('Failed to create order');
     }
 };
 
 export const getOrder = async () => {
     try {
-        const res = await axiosInstance.get(`/order/getOrder`);
+        const res = await axiosJWT.get(`/order/getOrder`);
         return res.data;
     } catch (error) {
         console.error('Error fetching orders:', error.response || error.message || error);

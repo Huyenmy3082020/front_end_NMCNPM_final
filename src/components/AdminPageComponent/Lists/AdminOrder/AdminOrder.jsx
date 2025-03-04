@@ -60,6 +60,9 @@ function AdminOrder() {
     const handleOnChange = (values) => {
         setSelectedSupllier(values);
     };
+    const handleDeleteProduct = (id) => {
+        setSelectedProduct((prev) => prev.filter((product) => product._id !== id));
+    };
     return (
         <div>
             <HeaderPageAdminProduct />
@@ -82,7 +85,11 @@ function AdminOrder() {
 
                         <AutoCompleteAdmin onSelectProduct={handleSelectProduct} />
                     </div>
-                    <TableAdminProduct selectedProduct={selectedProduct} onUpdateQuantity={handleUpdateQuantity} />
+                    <TableAdminProduct
+                        selectedProduct={selectedProduct}
+                        onUpdateQuantity={handleUpdateQuantity}
+                        onDeleteProduct={handleDeleteProduct}
+                    />
                 </div>
             </div>
             <FooterAdmin

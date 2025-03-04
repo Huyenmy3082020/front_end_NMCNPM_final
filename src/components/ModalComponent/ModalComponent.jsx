@@ -18,12 +18,9 @@ const ModalComponent = ({
     const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         onFinish(values);
-        console.log(values);
         form.resetFields();
         try {
             const res = await ProductService.createProduct(values);
-            console.log(res);
-            console.log(res.ingredient);
             dispatch(addProduct(res.ingredient));
             message.success('Tạo sản phẩm thành công');
         } catch (err) {

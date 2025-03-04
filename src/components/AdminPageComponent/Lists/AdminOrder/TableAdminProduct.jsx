@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Popconfirm, InputNumber, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { setOrder } from '../../../../redux/slides/OrderSlide';
+
 import { formatVND } from '../../../../ultil/index';
 
 import * as OrderService from '../../../../service/OrderService';
 
-const TableAdminProduct = ({ selectedProduct, onUpdateQuantity }) => {
-    const dispatch = useDispatch();
+const TableAdminProduct = ({ selectedProduct, onUpdateQuantity, onDeleteProduct }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 
     const handleDelete = async (id) => {
         try {
-            await OrderService.deleteOrder(id);
             message.success('Xóa sản phẩm thành công!');
+            onDeleteProduct(id); // Cập nhật state khi xóa thành công
         } catch (error) {
-            message.error('Xóa sản phẩm thất bạii!');
+            message.error('Xóa sản phẩm thất bại!');
         }
     };
-
-    const order = useSelector((state) => state.order); // Lấy toàn bộ order
-    const orderItems = useSelector((state) => state.order.orderItems); // Lấy danh sách sản phẩm trong order
 
     const columns = [
         {

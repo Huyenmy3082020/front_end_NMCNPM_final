@@ -56,13 +56,9 @@ const TableCategories = ({ data }) => {
         setSelectedRowKeys(selectedKeys);
     };
 
-    const handleEdit = (category) => {
-        console.log('Xem danh mục:', category);
-    };
+    const handleEdit = (category) => {};
 
-    const handleDelete = (id) => {
-        console.log('Xóa danh mục với ID:', id);
-    };
+    const handleDelete = (id) => {};
 
     return (
         <div>

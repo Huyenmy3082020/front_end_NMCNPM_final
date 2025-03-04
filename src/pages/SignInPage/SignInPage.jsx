@@ -33,15 +33,12 @@ function SignInPage() {
         try {
             const dataLogin = await UserService.loginUser({ email, password });
             const token = dataLogin.access_token;
-            console.log(token);
             localStorage.setItem('access_token', token);
             const res = await getDetailUser();
             dispatch(updateUser(res));
             navigate('/');
 
             const ress = await Productservice.getAllIngredientV1();
-            console.log(ress);
-            console.log(ress.data);
             dispatch(addProductAll(ress.data));
         } catch (error) {}
     };

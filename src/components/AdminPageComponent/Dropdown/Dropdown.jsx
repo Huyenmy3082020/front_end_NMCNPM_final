@@ -12,6 +12,15 @@ import {
     updateProductStatus,
     updateProductStock,
 } from '../../../redux/slides/ProductSlide.js';
+import {
+    CheckOutlined,
+    CloseOutlined,
+    DollarCircleOutlined,
+    FileTextOutlined,
+    SaveOutlined,
+    SendOutlined,
+    ShoppingCartOutlined,
+} from '@ant-design/icons';
 const DropdownPage = ({
     selectedsupplier,
     selectedProduct,
@@ -24,14 +33,11 @@ const DropdownPage = ({
     const [totalPrice, setTotalPrice] = useState(0);
     const user = useSelector((state) => state.userv1);
 
-    console.log(selectedProduct);
     useEffect(() => {
         let total = selectedProduct.reduce((acc, product) => acc + product.quantity * product.price, 0);
         setTotalPrice(formatVND(total));
         handleTotalPrice(total);
     }, [selectedProduct]);
-
-    selectedProduct.map((product) => console.log(product._id));
 
     const dispatch = useDispatch();
 
@@ -47,7 +53,7 @@ const DropdownPage = ({
                 ingredientNameAtPurchase: product.name || 'Không xác định',
                 quantity: product.quantity || 1,
                 priceAtPurchase: product.price || 0,
-                status: 'pending',
+                status: 'Pending',
             })),
             supplierName: selectedsupplier,
             deliveryAddress,
@@ -56,30 +62,7 @@ const DropdownPage = ({
                 0,
             ),
         };
-        if (label === 'Nhập hàng') {
-            try {
-                console.log(data.supplierName);
-                if (data.supplierName === '') {
-                    message.error('Vui lòng chọn nhà cung cấp!');
-                    return;
-                }
-                await OrderService.createOrder(data);
-                message.success('Nhập hàng thành công!');
-
-                if (selectedProduct && selectedProduct.length > 0) {
-                    selectedProduct.forEach((product) => {
-                        dispatch(increaseStock(product));
-                        dispatch(updateProductStatus(product));
-                    });
-                }
-
-                setDeliveryAddress('');
-                setIsActionImport(true);
-            } catch (error) {
-                console.error('Lỗi tạo đơn hàng:', error);
-                message.error('Tạo đơn hàng thất bại');
-            }
-        } else if (label === 'Gửi hàng') {
+        if (label === 'Gửi hàng') {
             message.info('Đang gửi hàng...');
             try {
                 await OrderService.Export(data);
@@ -92,24 +75,75 @@ const DropdownPage = ({
                 setDeliveryAddress('');
                 setIsActionImport(true);
             } catch (error) {}
+        } else if (label === 'Xác nhận đơn hàng') {
+            message.info('Đang gửi hàng...');
+            try {
+                await OrderService.ExportV1(data);
+                message.success('Xác nhận đơn hàng thành công!');
+            } catch (error) {}
         }
     };
 
     const items = [
         {
             key: '1',
-            label: 'Xác nhận đơn hàng',
+            label: (
+                <span>
+                    <CheckOutlined style={{ marginRight: 8 }} />
+                    Xác nhận đơn hàng
+                </span>
+            ),
             onClick: () => handleMenuClick('Xác nhận đơn hàng'),
         },
         {
             key: '2',
-            label: 'Gửi hàng',
+            label: (
+                <span>
+                    <SendOutlined style={{ marginRight: 8 }} />
+                    Gửi hàng
+                </span>
+            ),
             onClick: () => handleMenuClick('Gửi hàng'),
         },
         {
             key: '3',
-            label: 'Nhập hàng',
+            label: (
+                <span>
+                    <ShoppingCartOutlined style={{ marginRight: 8 }} />
+                    Nhập hàng
+                </span>
+            ),
             onClick: () => handleMenuClick('Nhập hàng'),
+        },
+        {
+            key: '4',
+            label: (
+                <span>
+                    <CloseOutlined style={{ marginRight: 8, color: 'red' }} />
+                    Hủy đơn hàng
+                </span>
+            ),
+            onClick: () => handleMenuClick('Hủy đơn hàng'),
+        },
+        {
+            key: '5',
+            label: (
+                <span>
+                    <DollarCircleOutlined style={{ marginRight: 8, color: 'green' }} />
+                    Hoàn tiền
+                </span>
+            ),
+            onClick: () => handleMenuClick('Hoàn tiền'),
+        },
+        {
+            key: '6',
+            label: (
+                <span>
+                    <FileTextOutlined style={{ marginRight: 8, color: 'blue' }} />
+                    Xuất hóa đơn
+                </span>
+            ),
+            onClick: () => handleMenuClick('Xuất hóa đơn'),
         },
     ];
 
@@ -117,8 +151,8 @@ const DropdownPage = ({
         <Space direction="vertical">
             <Space wrap>
                 <Dropdown menu={{ items }} placement="topRight">
-                    <div>
-                        <Button>Lưu</Button>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <Button icon={<SaveOutlined />}>Lưu</Button>
                     </div>
                 </Dropdown>
             </Space>

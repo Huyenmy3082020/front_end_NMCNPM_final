@@ -52,7 +52,6 @@ const TableComponent = ({ data, isActionEdit }) => {
         onFilter: (value, record) => record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
     });
 
-    console.log(data);
     const columns = () => [
         {
             title: 'Tên sản phẩm',
@@ -144,8 +143,6 @@ const TableComponent = ({ data, isActionEdit }) => {
     const dispatch = useDispatch();
 
     const handleEdit = (product) => {
-        console.log('Edit product:', product);
-
         setCurrentProduct(product);
         form.resetFields();
         form.setFieldsValue(product);
@@ -155,11 +152,8 @@ const TableComponent = ({ data, isActionEdit }) => {
 
     const handleDelete = async (id) => {
         try {
-            console.log('Delete product:', id);
-
             const res = await Productservice.deleteProduct(id);
             dispatch(deleteProduct(id));
-            console.log(res);
         } catch (error) {
             console.error('Error deleting product:', error);
         }
@@ -168,7 +162,6 @@ const TableComponent = ({ data, isActionEdit }) => {
         try {
             if (currentProduct) {
                 const updatedProduct = await Productservice.updateProduct(currentProduct._id, values);
-                console.log(updatedProduct);
                 dispatch(updateProduct(updatedProduct.ingredient));
                 form.resetFields();
                 setIsModalOpen(false);
@@ -179,9 +172,7 @@ const TableComponent = ({ data, isActionEdit }) => {
         }
     };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+    const onFinishFailed = (errorInfo) => {};
 
     const handleSelectChange = (selectedKeys) => {
         setSelectedRowKeys(selectedKeys);
