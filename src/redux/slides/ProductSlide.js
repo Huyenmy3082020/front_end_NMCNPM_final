@@ -78,6 +78,7 @@ export const {
     increaseStock,
     decreaseStock,
     updateProductStatus,
+    updateProductStock,
 } = productSlice.actions;
 
 export default productSlice.reducer;

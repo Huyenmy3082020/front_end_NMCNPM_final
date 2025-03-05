@@ -4,8 +4,6 @@ import { logout } from '../redux/slides/UserSlideV1';
 import { store } from '../redux/store';
 import { axiosJWT } from '.';
 import { jwtDecode } from 'jwt-decode';
-
-// 🌟 Interceptor request: Không cần chỉnh sửa
 axiosJWT.interceptors.request.use(
     async (config) => config,
     (error) => Promise.reject(error),
@@ -23,7 +21,9 @@ const isTokenExpired = (token) => {
         return true;
     }
 };
+
 console.log(isTokenExpired(accessToken));
+
 axiosJWT.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -32,9 +32,11 @@ axiosJWT.interceptors.response.use(
         if (isTokenExpired(accessToken)) {
             console.log('⚠️ Token hết hạn, thực hiện refresh...');
             try {
-                // await refreshToken();
+                const newToken = await refreshToken();
                 console.log('✅ Token đã được refresh, thử gọi lại request');
-                return axiosJWT(originalRequest); // Retry request với token mới
+
+                originalRequest.headers['Authorization'] = `Bearer ${newToken.access_token}`;
+                return axiosJWT(originalRequest); // Gửi lại request với token mới
             } catch (refreshError) {
                 console.error('❌ Refresh token thất bại, đăng xuất người dùng...');
                 return Promise.reject(refreshError);
@@ -50,31 +52,28 @@ export const getDetailUser = async () => {
         console.log('✅ Lấy thông tin user thành công:', res.data);
         return res.data;
     } catch (error) {
-        console.error('❌ Lỗi khi lấy thông tin user:', error);
-        throw new Error('Failed to fetch user details');
+        return error.response.data.mess;
     }
 };
 
 export const refreshToken = async () => {
     try {
         const res = await axiosInstance.post('/user/refreshtoken', {}, { withCredentials: true });
-        console.log('✅ Token đã được refresh:', res);
-        localStorage.setItem('access_token', res.data.access_token); // Cập nhật token mới vào localStorage
+        console.log('✅ Token đã được refresh:', res.data);
+
+        localStorage.setItem('access_token', res.data.access_token);
         return res.data;
     } catch (error) {
         console.error('❌ Refresh token thất bại:', error);
-        if (error.response?.status === 403) {
-            console.error('❌ Refresh token hết hạn, logout ngay');
-            store.dispatch(logout()); // 🚀 Đăng xuất ngay nếu refresh hết hạn
-        }
         throw error;
     }
 };
+
 export const logoutUser = async () => {
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}user/logout`, {}, { withCredentials: true });
         store.dispatch(logout());
-        console.log('�� Đăng xuất thành công:', res.data);
+        console.log(' Đăng xuất thành công:', res.data);
         return res.data;
     } catch (error) {
         console.error('❌ Lỗi khi logout:', error);
