@@ -16,7 +16,7 @@ const App = () => {
     const handleGetDetailUser = async () => {
         try {
             const res = await Userservice.getDetailUser();
-            console.log('🚀 ~ file: App.js ~ line 41 ~ handleGetDetailUser ~ res', res);
+
             if (res === 'Unauthorized') {
                 navigate('/sign-in');
                 return;

@@ -15,9 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import * as Productservice from '../../service/Productservice';
 import { addProductAll, addProductv1 } from '../../redux/slides/ProductSlide';
+import { Eye, EyeOff } from 'lucide-react';
 function SignInPage() {
     const [email, setEmmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const getDetailUser = async () => {
         try {
             const res = await UserService.getDetailUser();
@@ -40,7 +42,9 @@ function SignInPage() {
 
             const ress = await Productservice.getAllIngredientV1();
             dispatch(addProductAll(ress.data));
-        } catch (error) {}
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -96,14 +100,21 @@ function SignInPage() {
                             </div>
                             <div className={styles.wrapperInfo}>
                                 <div className={styles.wrapperInfoName}>Mật khẩu</div>
-                                <input
-                                    type="password"
-                                    className={styles.wrapperInfoInput}
-                                    value={password}
-                                    onChange={(e) => {
-                                        setPassword(e.target.value);
-                                    }}
-                                />
+                                <div className={styles.wrapperInputContainer}>
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        className={styles.wrapperInfoInput}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.togglePasswordBtn}
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
                             </div>
 
                             <div className={styles.wrapperInfo}>
@@ -135,7 +146,10 @@ function SignInPage() {
                             </div>
                             <div className={styles.wrapperInfo}>
                                 <h3 style={{ marginTop: '24px', fontSize: '24x' }}>
-                                    Bạn đã có tài khoản?<a style={{ color: '#2D65C3' }}>Đăng nhập ngay</a>
+                                    Bạn chưa có tài khoản?
+                                    <a style={{ color: '#2D65C3' }} href="/sign-up">
+                                        Đăng kí ngay
+                                    </a>
                                 </h3>
                             </div>
                         </div>

@@ -12,6 +12,8 @@ import {
     UserOutlined,
     GlobalOutlined,
     LogoutOutlined,
+    UserAddOutlined,
+    LoginOutlined,
 } from '@ant-design/icons';
 import { logout } from '../../../redux/slides/UserSlideV1';
 import * as UserService from '../../../service/Userservice';
@@ -23,7 +25,6 @@ import { searchElastic } from '../../../service/Productservice';
 function HeaderPageAdminProduct({ setsearchProduct }) {
     const dispatch = useDispatch();
     const handleDelete = () => {
-        // delete all products
         dispatch(deleteAllProducts());
     };
     const user = useSelector((state) => state.userv1);
@@ -46,6 +47,23 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
             icon: <LogoutOutlined />,
             onClick: () => handleMenuClick('Đăng xuất'),
         },
+        {
+            key: '4',
+            label: 'Đăng nhập',
+            icon: <LoginOutlined />,
+            onClick: () => navigate('/sign-in'),
+        },
+        {
+            key: '5',
+            label: 'Đăng ký',
+            icon: <UserAddOutlined />,
+            onClick: () => navigate('/sign-up'),
+        },
+
+        {
+            key: '4',
+            label: `Email : ${user.email}`,
+        },
     ];
 
     const navigate = useNavigate();
@@ -54,6 +72,7 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
             try {
                 await UserService.logoutUser();
                 dispatch(logout());
+                dispatch(deleteAllProducts());
                 message.success('Đăng xuất thành công!');
                 navigate('/sign-in');
             } catch (error) {
@@ -64,6 +83,7 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
             navigate('/profile_page');
         }
     };
+
     const [search, setSearch] = useState('');
 
     const debouncedSearch = useCallback(
@@ -88,18 +108,12 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
         };
     }, [debouncedSearch]);
 
-    const handleOnChangeSearch = (e) => {
-        setSearch(e.target.value);
-        debouncedSearch(e.target.value);
-    };
+    console.log(user);
 
     return (
         <div className={styles.wrapper}>
             <div className={`${styles.wrapperList} ${styles.searchSection}`}>
                 <h1>Tổng quan</h1>
-            </div>
-            <div className={`${styles.wrapperList} ${styles.searchSection}`}>
-                <Input value={search} placeholder="Tìm kiếm sản phẩm" onChange={handleOnChangeSearch}></Input>
             </div>
 
             <div className={`${styles.wrapperList} ${styles.iconSection}`}>
@@ -114,9 +128,10 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
                 <div className={styles.wrapperItem}>
                     <Notification></Notification>
                 </div>
+
                 <Dropdown menu={{ items }} placement="bottomLeft">
                     <div className={styles.wrapperItem}>
-                        {user.length > 0 ? <UserOutlined /> : <img className={styles.avatar} src={user.avatar}></img>}
+                        {user._id === '' ? <UserOutlined /> : <img className={styles.avatar} src={user?.avatar}></img>}
                     </div>
                 </Dropdown>
             </div>

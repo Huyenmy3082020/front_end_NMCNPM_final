@@ -13,6 +13,7 @@ import * as OrderService from '../../../../../service/OrderService.js';
 const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModalVisible, goodDelivery }) => {
     const [quantities, setQuantities] = useState({});
 
+    console.log('selectedDelivery:', selectedDelivery);
     useEffect(() => {
         if (selectedDelivery?.items) {
             const initialQuantities = {};
@@ -66,6 +67,7 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
         }
     };
 
+    console.log('    selectedDelivery.status', selectedDelivery.status);
     const columns = [
         {
             title: 'Tên sản phẩm',
@@ -127,6 +129,8 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
                     console.error('❌ Sản phẩm không hợp lệ khi dispatch:', product);
                 }
             });
+
+            setIsModalVisible(false);
         } catch (error) {
             message.error('Tạo đơn hàng thất bại!');
         }
@@ -144,7 +148,12 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
                     Cập nhật đơn hàng
                 </Button>
 
-                <Button type="primary" style={{ marginTop: '10px' }} onClick={handleCreated}>
+                <Button
+                    type="primary"
+                    style={{ marginTop: '10px' }}
+                    onClick={handleCreated}
+                    disabled={selectedDelivery.status === 'Created'}
+                >
                     Nhập hàng
                 </Button>
             </div>

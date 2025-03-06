@@ -83,7 +83,7 @@ const GoodsDeliveryTable = () => {
             dataIndex: 'deliveryDate',
             key: 'deliveryDate',
             render: (text) => formatDateTime(text),
-            sorter: (a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate),
+            sorter: (a, b) => new Date(b.deliveryDate) - new Date(a.deliveryDate),
         },
         {
             title: 'Nhà cung cấp',

@@ -44,7 +44,7 @@ export const updateProduct = async (id, data) => {
 
 export const getAllIngredient = async () => {
     try {
-        const res = await axiosInstance.get(`/ingredient`);
+        const res = await axiosJWT.get(`/ingredient`);
         return res.data;
     } catch (error) {
         throw new Error('L��i khi lấy dữ liệu đơn hàng');
@@ -53,10 +53,10 @@ export const getAllIngredient = async () => {
 
 export const getAllIngredientV1 = async () => {
     try {
-        const res = await axiosInstance.get(`/inventor`);
+        const res = await axiosJWT.get(`/inventor`);
         return res.data;
     } catch (error) {
-        throw new Error('L��i khi lấy dữ liệu đơn hàng');
+        return error.message;
     }
 };
 
