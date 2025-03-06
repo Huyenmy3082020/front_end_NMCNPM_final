@@ -1,12 +1,8 @@
-import Search from 'antd/es/transfer/search';
 import styles from '../../AdminPageComponent/HeaderPageAdmin/HeaderPageAdminProduct.module.scss';
-
-import { AutoComplete, Dropdown, Input, message } from 'antd';
-import AutoCompleteAdmin from '../HeaderPageAdmin/AutoCompleteAdmin';
+import { Dropdown, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteAllProducts } from '../../../../src/redux/slides/ProductSlide';
 import {
-    BellOutlined,
     MoonOutlined,
     SettingOutlined,
     UserOutlined,
@@ -20,8 +16,6 @@ import * as UserService from '../../../service/Userservice';
 import { useNavigate } from 'react-router-dom';
 import Notification from '../../NotificationComponent/Notification';
 import _ from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
-import { searchElastic } from '../../../service/Productservice';
 function HeaderPageAdminProduct({ setsearchProduct }) {
     const dispatch = useDispatch();
     const handleDelete = () => {
@@ -83,32 +77,6 @@ function HeaderPageAdminProduct({ setsearchProduct }) {
             navigate('/profile_page');
         }
     };
-
-    const [search, setSearch] = useState('');
-
-    const debouncedSearch = useCallback(
-        _.debounce((value) => {
-            fetchSearchResults(value);
-        }, 1000),
-        [],
-    );
-
-    const fetchSearchResults = async (query) => {
-        try {
-            const response = await searchElastic({ querySearch: query });
-            setsearchProduct(response.data.ingredients);
-        } catch (error) {
-            console.error('❌ Lỗi khi tìm kiếm:', error);
-        }
-    };
-
-    useEffect(() => {
-        return () => {
-            debouncedSearch.cancel();
-        };
-    }, [debouncedSearch]);
-
-    console.log(user);
 
     return (
         <div className={styles.wrapper}>

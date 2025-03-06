@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 function AdminProduct() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const dispatch = useDispatch();
     const products = useSelector((state) => state.product.products);
     const [searchProduct, setSearchProduct] = useState([]);
 
@@ -43,7 +42,7 @@ function AdminProduct() {
         const fetchCategories = async () => {
             try {
                 const res = await CategoryService.getAll();
-                setCategories(res.categories);
+                setCategories(res);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }

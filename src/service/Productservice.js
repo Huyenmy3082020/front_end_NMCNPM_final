@@ -1,11 +1,5 @@
-import { ConsoleSqlOutlined } from '@ant-design/icons';
-import axios from 'axios';
 import { axiosJWT } from '.';
 import { message } from 'antd';
-
-const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
-});
 
 export const createProduct = async (data) => {
     try {
@@ -57,32 +51,5 @@ export const getAllIngredientV1 = async () => {
         return res.data;
     } catch (error) {
         return error.message;
-    }
-};
-
-export const getAllSupplier = async () => {
-    try {
-        const res = await axiosInstance.get(`/supplier`);
-        return res.data.suppliers;
-    } catch (error) {
-        throw new Error('L��i khi lấy dữ liệu đơn hàng');
-    }
-};
-
-export const getAllCategory = async () => {
-    try {
-        const res = await axiosInstance.get(`/category`);
-        return res.data.categories;
-    } catch (error) {
-        throw new Error('L��i khi lấy dữ liệu đơn hàng');
-    }
-};
-
-export const searchElastic = async (searchQuery) => {
-    try {
-        const res = await axiosInstance.get(`ingredient/search?searchQuery=${searchQuery.querySearch}`);
-        return res;
-    } catch (error) {
-        throw new Error('L��i khi lấy dữ liệu đơn hàng');
     }
 };

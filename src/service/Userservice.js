@@ -22,8 +22,6 @@ const isTokenExpired = (token) => {
     }
 };
 
-console.log(isTokenExpired(accessToken));
-
 axiosJWT.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -58,7 +56,7 @@ export const getDetailUser = async () => {
 
 export const refreshToken = async () => {
     try {
-        const res = await axiosInstance.post('/user/refreshtoken', {}, { withCredentials: true });
+        const res = await axiosJWT.post('/user/refreshtoken', {});
         console.log('✅ Token đã được refresh:', res.data);
 
         localStorage.setItem('access_token', res.data.access_token);
@@ -90,9 +88,5 @@ export const loginUser = async (data) => {
 export const signUpUser = async (data) => {
     console.log(data);
     const res = await axios.post(`http://localhost:2000/user/sign-up`, data);
-    return res.data;
-};
-export const getAllUser = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}user/getAll`);
     return res.data;
 };

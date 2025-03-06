@@ -22,15 +22,13 @@ const GoodsDeliveryTableV1 = ({ selectedDelivery, setSelectedDelivery, setIsModa
         }));
     };
 
-    // 🔹 Chỉnh sửa dataSource để lấy đúng dữ liệu
     const dataSource = selectedDelivery?.items?.map((item) => ({
         _id: item._id,
-        name: item.ingredientNameAtPurchase, // ✅ Lấy đúng tên sản phẩm
+        name: item.ingredientNameAtPurchase,
         price: item.priceAtPurchase, // ✅ Lấy đúng giá tại thời điểm đặt hàng
         quantity: quantities[item._id] || item.quantity, // ✅ Cập nhật số lượng
     }));
 
-    // 🔹 Tính tổng tiền dựa trên số lượng cập nhật
     const totalPrice = dataSource.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0);
 
     const dataUpdate = {

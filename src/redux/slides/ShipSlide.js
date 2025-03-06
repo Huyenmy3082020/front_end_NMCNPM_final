@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Khởi tạo state ban đầu
 const initialState = {
     fullname: '',
     address: '',

@@ -28,7 +28,6 @@ const cartSlice = createSlice({
             state.totalPrice += productDetails.price * quantity; // Cập nhật tổng giá tiền
         },
 
-        // Xóa tất cả sản phẩm trong giỏ hàng
         clearCart: (state) => {
             state.items = []; // Xóa tất cả sản phẩm trong giỏ
             state.totalPrice = 0; // Đặt lại tổng giá tiền

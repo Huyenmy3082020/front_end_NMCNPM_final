@@ -20,7 +20,6 @@ export const validateForm = (email, password, confirmPassword) => {
         errors.password = 'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ số và 1 ký tự đặc biệt.';
     }
 
-    // Kiểm tra xác nhận mật khẩu
     if (!confirmPassword) {
         errors.confirmPassword = 'Vui lòng nhập lại mật khẩu.';
     } else if (confirmPassword !== password) {

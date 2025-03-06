@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import * as ProductService from '../../../../../service/Productservice';
+import * as CategoriService from '../../../../../service/CategoriService';
 import HeaderPageAdminProduct from '../../../HeaderPageAdmin/HederPageAdminProduct';
 import TableSupplier from './TableSupplier';
 function Supplier() {
@@ -8,7 +8,7 @@ function Supplier() {
     useEffect(() => {
         const fetchProductAll = async () => {
             try {
-                const res = await ProductService.getAllSupplier();
+                const res = await CategoriService.getAllSupplies();
 
                 setSuppliers(res);
             } catch (error) {

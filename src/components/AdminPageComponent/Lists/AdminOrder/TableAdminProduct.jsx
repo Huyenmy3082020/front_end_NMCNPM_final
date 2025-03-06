@@ -4,8 +4,6 @@ import { DeleteOutlined } from '@ant-design/icons';
 
 import { formatVND } from '../../../../ultil/index';
 
-import * as OrderService from '../../../../service/OrderService';
-
 const TableAdminProduct = ({ selectedProduct, onUpdateQuantity, onDeleteProduct }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 

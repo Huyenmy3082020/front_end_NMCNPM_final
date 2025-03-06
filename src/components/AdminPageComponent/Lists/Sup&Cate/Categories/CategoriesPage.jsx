@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import * as ProductService from '../../../../../service/Productservice';
+import * as CategoriService from '../../../../../service/CategoriService';
 import HeaderPageAdminProduct from '../../../HeaderPageAdmin/HederPageAdminProduct';
 import TableCategories from '../Categories/TableCategories';
 function Categories() {
@@ -8,8 +8,8 @@ function Categories() {
     useEffect(() => {
         const fetchProductAll = async () => {
             try {
-                const res = await ProductService.getAllCategory();
-
+                const res = await CategoriService.getAll();
+                console.log(res);
                 setCategories(res);
             } catch (error) {
                 console.error('Error fetching products:', error);

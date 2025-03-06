@@ -48,7 +48,7 @@ function AdminOrder() {
         const fetchSuppliers = async () => {
             try {
                 const res = await CategoryService.getAllSupplies();
-                setSuppliers(res.suppliers);
+                setSuppliers(res);
             } catch (error) {
                 console.error('Error fetching suppliers:', error);
             }
